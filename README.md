@@ -13,10 +13,10 @@ A Firefox extension that replaces your scrollbar with a lightsaber.
 - **Static** — Hilt fixed at top, blade extends downward like a classic scrollbar.
 
 **Four hilt designs:**
-- Luke Skywalker (RotJ)
-- Darth Vader
-- Mace Windu (electrum)
-- Obi-Wan Kenobi (RotS)
+- Chrome slim (thin grip rings, red activation switch)
+- Dark aggressive (black body, silver bands)
+- Electrum gold (ornate, gold finish)
+- Copper stepped (brass tones, tiered shroud)
 
 **Seven blade colors:**
 - Blue, Green, Red, Purple, Black (Darksaber), White, and a custom color picker with hue/brightness sliders.
