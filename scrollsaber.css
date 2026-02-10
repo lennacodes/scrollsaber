@@ -1,6 +1,7 @@
-/* Hide native scrollbar — track overlays the page edge */
+/* Hide native scrollbar and make room for the saber track */
 html {
   scrollbar-width: none !important;
+  margin-right: 28px !important;
 }
 
 /* ============================================
@@ -857,6 +858,11 @@ html {
 }
 
 /* ============ LEFT-HAND MODE ============ */
+html.scrollsaber-left {
+  margin-right: 0 !important;
+  margin-left: 28px !important;
+}
+
 .left-hand#scrollsaber-track {
   right: auto;
   left: 0;
