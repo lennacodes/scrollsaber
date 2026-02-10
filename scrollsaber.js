@@ -854,6 +854,24 @@
     maulMode = on;
     if (on) {
       track.classList.add("maul-mode");
+      // If blade is already ejected, ignite blade2 immediately
+      if (currentMode === "eject" && bladeEjected) {
+        const trackH = track.clientHeight;
+        const hiltH = hilt.offsetHeight;
+        const scrollableH = trackH - hiltH;
+        const frac = getScrollFraction();
+        const hiltTop = Math.round(frac * scrollableH);
+        const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
+        blade2.style.display = "block";
+        blade2.style.top = geo2.bladeStart + "px";
+        blade2.style.height = geo2.bladeH + "px";
+        blade2.classList.remove("retracting");
+        blade2.classList.add("igniting");
+        blade2.addEventListener("animationend", () => {
+          blade2.classList.remove("igniting");
+        }, { once: true });
+        setContactSparks2(geo2.touching, geo2.pushDepth);
+      }
     } else {
       track.classList.remove("maul-mode");
       // If blade2 is visible, retract it
