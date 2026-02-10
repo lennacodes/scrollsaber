@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "ScrollSaber",
+  "version": "1.0",
+  "description": "Transforms your scrollbar into a lightsaber.",
+  "icons": {
+    "48": "icons/scrollsaber-48.svg"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["scrollsaber.css"],
+      "js": ["scrollsaber.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icons/scrollsaber-48.svg"
+  },
+  "permissions": ["storage"],
+  "web_accessible_resources": ["sounds/*.ogg"]
+}
