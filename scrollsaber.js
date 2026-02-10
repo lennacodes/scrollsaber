@@ -23,7 +23,7 @@
   const BLADE_LENGTH_RATIO = 4.55; // Eject blade length relative to hilt height
 
   // --- DOM refs ---
-  let track, hilt, bladeArea, blade;
+  let track, hilt, bladeArea, blade, blade2;
 
   // --- Core state ---
   let isDragging = false;
@@ -39,12 +39,13 @@
   let currentMode = "classic";
   let bladeEjected = false;
   let hasIgnited = false;
+  let maulMode = false;
 
   // --- Flicker ---
   let flickerEnabled = true;
   let flickerRunning = false;
 
-  // --- Contact sparks & melt ---
+  // --- Contact sparks & melt (top) ---
   let contactSparksActive = false;
   let contactSparksInterval = null;
   let contactIntensity = 0;
@@ -52,6 +53,15 @@
   let meltJitterRAF = null;
   let lastSparkRate = 0;
   let lastDripRate = 0;
+
+  // --- Contact sparks & melt (bottom — Maul mode) ---
+  let contactSparksActive2 = false;
+  let contactSparksInterval2 = null;
+  let contactIntensity2 = 0;
+  let meltDripInterval2 = null;
+  let meltJitterRAF2 = null;
+  let lastSparkRate2 = 0;
+  let lastDripRate2 = 0;
 
   // --- Color ---
   let currentColor = SABER_COLORS.blue;
@@ -76,6 +86,7 @@
     hilt.id = "scrollsaber-hilt";
     hilt.innerHTML =
       '<div id="scrollsaber-pommel"></div>' +
+      '<div id="scrollsaber-emitter2"></div>' +
       '<div id="scrollsaber-hilt-body">' +
         '<div id="scrollsaber-grip"></div>' +
         '<div id="scrollsaber-switch"></div>' +
@@ -88,6 +99,9 @@
     blade = document.createElement("div");
     blade.id = "scrollsaber-blade";
 
+    blade2 = document.createElement("div");
+    blade2.id = "scrollsaber-blade2";
+
     const clash = document.createElement("div");
     clash.id = "scrollsaber-clash";
 
@@ -97,12 +111,21 @@
     const melt = document.createElement("div");
     melt.id = "scrollsaber-melt";
 
+    const contact2 = document.createElement("div");
+    contact2.id = "scrollsaber-contact2";
+
+    const melt2 = document.createElement("div");
+    melt2.id = "scrollsaber-melt2";
+
     bladeArea.appendChild(blade);
+    bladeArea.appendChild(blade2);
     bladeArea.appendChild(clash);
     track.appendChild(hilt);
     track.appendChild(bladeArea);
     track.appendChild(contact);
     track.appendChild(melt);
+    track.appendChild(contact2);
+    track.appendChild(melt2);
     document.documentElement.appendChild(track);
   }
 
@@ -135,6 +158,19 @@
     if (meltEl) {
       meltEl.classList.remove("active", "cooling");
       meltEl.removeAttribute("style");
+    }
+
+    // Reset blade2 (Maul mode)
+    blade2.style.height = "0";
+    blade2.style.top = "";
+    blade2.style.display = "none";
+    blade2.classList.remove("igniting", "retracting");
+    setContactSparks2(false);
+    if (meltJitterRAF2) { cancelAnimationFrame(meltJitterRAF2); meltJitterRAF2 = null; }
+    const meltEl2 = document.getElementById("scrollsaber-melt2");
+    if (meltEl2) {
+      meltEl2.classList.remove("active", "cooling");
+      meltEl2.removeAttribute("style");
     }
 
     // Hide blade entirely in eject mode (shown on double-click)
@@ -174,6 +210,17 @@
     // How far the blade is pushed past the top (0 = just touching, 1 = fully compressed)
     const pushDepth = touching ? Math.min(1, (fixedLen - hiltTop) / fixedLen) : 0;
     return { bladeH, bladeTop, touching, pushDepth };
+  }
+
+  // --- Maul mode: bottom blade geometry ---
+  function getEjectBlade2Geometry(hiltTop, hiltH, trackH) {
+    const fixedLen = Math.round(hiltH * BLADE_LENGTH_RATIO);
+    const bladeStart = hiltTop + hiltH;
+    const maxLen = trackH - bladeStart;
+    const bladeH = Math.max(0, Math.min(fixedLen, maxLen));
+    const touching = maxLen >= 0 && maxLen < fixedLen;
+    const pushDepth = touching ? Math.min(1, (fixedLen - maxLen) / fixedLen) : 0;
+    return { bladeH, bladeStart, touching, pushDepth };
   }
 
   function updateBlade() {
@@ -219,11 +266,22 @@
         blade.style.height = geo.bladeH + "px";
         bladeArea.style.setProperty("--blade-height", geo.bladeH + "px");
         setContactSparks(geo.touching, geo.pushDepth);
+
+        if (maulMode) {
+          const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
+          blade2.style.top = geo2.bladeStart + "px";
+          blade2.style.height = geo2.bladeH + "px";
+          setContactSparks2(geo2.touching, geo2.pushDepth);
+        }
       } else {
         blade.style.height = "0";
         blade.style.top = "0";
         bladeArea.style.setProperty("--blade-height", "0px");
         setContactSparks(false);
+        if (maulMode) {
+          blade2.style.height = "0";
+          setContactSparks2(false);
+        }
       }
     }
   }
@@ -329,6 +387,13 @@
         blade.style.height = geo.bladeH + "px";
         bladeArea.style.setProperty("--blade-height", geo.bladeH + "px");
         setContactSparks(geo.touching, geo.pushDepth);
+
+        if (maulMode) {
+          const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
+          blade2.style.top = geo2.bladeStart + "px";
+          blade2.style.height = geo2.bladeH + "px";
+          setContactSparks2(geo2.touching, geo2.pushDepth);
+        }
       }
     }
   }
@@ -370,6 +435,21 @@
         blade.classList.remove("igniting");
       }, { once: true });
       setContactSparks(geo.touching, geo.pushDepth);
+
+      // Maul mode — ignite bottom blade
+      if (maulMode) {
+        const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
+        blade2.style.display = "block";
+        blade2.style.top = geo2.bladeStart + "px";
+        blade2.style.height = geo2.bladeH + "px";
+        blade2.classList.remove("retracting");
+        blade2.classList.add("igniting");
+        blade2.addEventListener("animationend", () => {
+          blade2.classList.remove("igniting");
+        }, { once: true });
+        setContactSparks2(geo2.touching, geo2.pushDepth);
+      }
+
       playSound(sndIgnition);
     } else {
       // Retract blade
@@ -388,6 +468,21 @@
         blade.style.display = "none";
         bladeArea.style.setProperty("--blade-height", "0px");
       }, { once: true });
+
+      // Maul mode — retract bottom blade
+      if (maulMode) {
+        setContactSparks2(false);
+        const emitter2 = document.getElementById("scrollsaber-emitter2");
+        if (emitter2) emitter2.style.boxShadow = "";
+        blade2.classList.remove("igniting");
+        blade2.classList.add("retracting");
+        blade2.addEventListener("animationend", () => {
+          blade2.classList.remove("retracting");
+          blade2.style.height = "0";
+          blade2.style.top = "";
+          blade2.style.display = "none";
+        }, { once: true });
+      }
     }
   }
 
@@ -577,6 +672,207 @@
     }
   }
 
+  // --- Bottom contact sparks + melt (Maul mode — blade hitting bottom) ---
+  function jitterMelt2(meltEl) {
+    if (!contactSparksActive2 || !meltEl) { meltJitterRAF2 = null; return; }
+    const skew = ((Math.random() - 0.5) * 6).toFixed(1);
+    const blobL = (30 + Math.random() * 40).toFixed(0);
+    const blobR = (30 + Math.random() * 40).toFixed(0);
+    const hotspot = (40 + Math.random() * 30).toFixed(0);
+    meltEl.style.setProperty("--melt-skew2", skew + "deg");
+    meltEl.style.setProperty("--melt-blobL2", blobL + "%");
+    meltEl.style.setProperty("--melt-blobR2", blobR + "%");
+    meltEl.style.setProperty("--melt-hotspot2", hotspot + "%");
+    meltJitterRAF2 = requestAnimationFrame(() => {
+      setTimeout(() => jitterMelt2(meltEl), 40 + Math.random() * 60);
+    });
+  }
+
+  function setContactSparks2(active, pushDepth) {
+    const contactEl = document.getElementById("scrollsaber-contact2");
+    const meltEl = document.getElementById("scrollsaber-melt2");
+    if (!contactEl) return;
+
+    if (active) {
+      contactIntensity2 = pushDepth || 0;
+      const glowScale = 0.6 + contactIntensity2 * 1.4;
+      contactEl.style.transform = "scaleY(" + glowScale + ")";
+      contactEl.style.opacity = (0.5 + contactIntensity2 * 0.5).toString();
+
+      if (meltEl) {
+        meltEl.classList.add("active");
+        meltEl.classList.remove("cooling");
+        const meltH = Math.round(8 + contactIntensity2 * 28);
+        const meltOpacity = 0.3 + contactIntensity2 * 0.7;
+        meltEl.style.height = meltH + "px";
+        meltEl.style.opacity = meltOpacity.toString();
+      }
+    }
+
+    if (active && !contactSparksActive2) {
+      contactSparksActive2 = true;
+      contactEl.classList.add("active");
+      spawnContactSparks2();
+      updateSparkInterval2();
+      updateDripInterval2();
+      if (meltEl && !meltJitterRAF2) jitterMelt2(meltEl);
+    } else if (active && contactSparksActive2) {
+      updateSparkInterval2();
+      updateDripInterval2();
+    } else if (!active && contactSparksActive2) {
+      contactSparksActive2 = false;
+      const lastIntensity = contactIntensity2;
+      contactIntensity2 = 0;
+      contactEl.classList.remove("active");
+      contactEl.style.transform = "";
+      contactEl.style.opacity = "";
+      clearInterval(contactSparksInterval2);
+      contactSparksInterval2 = null;
+      clearInterval(meltDripInterval2);
+      meltDripInterval2 = null;
+      lastSparkRate2 = 0;
+      lastDripRate2 = 0;
+      if (meltJitterRAF2) { cancelAnimationFrame(meltJitterRAF2); meltJitterRAF2 = null; }
+
+      if (meltEl && lastIntensity > 0.05) {
+        const coolDur = (0.8 + lastIntensity * 1.5).toFixed(2);
+        meltEl.style.setProperty("--cool-dur2", coolDur + "s");
+        meltEl.style.setProperty("--cool-start-opacity2", (0.3 + lastIntensity * 0.7).toFixed(2));
+        meltEl.style.setProperty("--cool-height2", meltEl.style.height);
+        meltEl.classList.remove("active");
+        meltEl.classList.add("cooling");
+        meltEl.addEventListener("animationend", () => {
+          meltEl.classList.remove("cooling");
+          meltEl.style.height = "";
+          meltEl.style.opacity = "";
+          meltEl.style.removeProperty("--cool-dur2");
+          meltEl.style.removeProperty("--cool-start-opacity2");
+          meltEl.style.removeProperty("--cool-height2");
+          meltEl.style.removeProperty("--melt-skew2");
+          meltEl.style.removeProperty("--melt-blobL2");
+          meltEl.style.removeProperty("--melt-blobR2");
+          meltEl.style.removeProperty("--melt-hotspot2");
+        }, { once: true });
+      } else if (meltEl) {
+        meltEl.classList.remove("active", "cooling");
+        meltEl.style.height = "";
+        meltEl.style.opacity = "";
+      }
+    }
+  }
+
+  function updateSparkInterval2() {
+    const rate = Math.round(80 - contactIntensity2 * 55);
+    if (rate === lastSparkRate2 && contactSparksInterval2) return;
+    lastSparkRate2 = rate;
+    clearInterval(contactSparksInterval2);
+    contactSparksInterval2 = setInterval(spawnContactSparks2, rate);
+  }
+
+  function updateDripInterval2() {
+    if (contactIntensity2 < 0.15) {
+      clearInterval(meltDripInterval2);
+      meltDripInterval2 = null;
+      lastDripRate2 = 0;
+      return;
+    }
+    const rate = Math.round(400 - contactIntensity2 * 280);
+    if (rate === lastDripRate2 && meltDripInterval2) return;
+    lastDripRate2 = rate;
+    clearInterval(meltDripInterval2);
+    meltDripInterval2 = setInterval(spawnMeltDrip2, rate);
+  }
+
+  function spawnMeltDrip2() {
+    if (!bladeArea) return;
+    const t = contactIntensity2;
+    const drip = document.createElement("div");
+    drip.className = "scrollsaber-melt-drip";
+
+    if (t > 0.6 && Math.random() < 0.4) {
+      drip.classList.add("drip-hot");
+    } else if (t > 0.3 && Math.random() < 0.5) {
+      drip.classList.add("drip-warm");
+    }
+
+    const fallDist = -(20 + Math.random() * (30 + t * 60)); // Negative = upward
+    const dur = 0.6 + Math.random() * 0.8;
+    const drift = (Math.random() - 0.5) * 8;
+    drip.style.setProperty("--fall", fallDist + "px");
+    drip.style.setProperty("--drift", drift + "px");
+    drip.style.setProperty("--dur", dur + "s");
+    drip.style.left = (5 + Math.random() * 18) + "px";
+    drip.style.top = "auto";
+    drip.style.bottom = "0";
+    track.appendChild(drip);
+    setTimeout(() => drip.remove(), dur * 1000 + 50);
+  }
+
+  function spawnContactSparks2() {
+    if (!bladeArea) return;
+    const t = contactIntensity2;
+
+    const count = 2 + Math.floor(t * 6) + Math.floor(Math.random() * (1 + t * 3));
+    for (let i = 0; i < count; i++) {
+      const spark = document.createElement("div");
+      const r = Math.random();
+      const hotChance = 0.15 + t * 0.35;
+      const warmChance = hotChance + 0.35;
+      const type = r < hotChance ? "ember-hot" : r < warmChance ? "ember-warm" : "ember-dim";
+      spark.className = "scrollsaber-contact-spark " + type;
+
+      const angleSpread = (1.0 + t * 0.8) * Math.PI;
+      const angle = Math.random() * angleSpread - angleSpread * 0.15;
+      const baseSpeed = 15 + t * 30;
+      const speed = baseSpeed + Math.random() * (50 + t * 80);
+      let dx = Math.cos(angle) * speed;
+      let dy = -(Math.abs(Math.sin(angle)) * speed + 3); // Negative = upward
+
+      const wildChance = 0.1 + t * 0.2;
+      const wild = Math.random();
+      if (wild < wildChance * 0.5) {
+        dx *= 2 + t * 2;
+      }
+      if (wild > 1 - wildChance * 0.4) {
+        dy = Math.abs(dy) * (0.3 + t * 0.7); // Downward bounce (opposite of top)
+      }
+
+      const dur = 0.2 + Math.random() * (0.4 + t * 0.4);
+      spark.style.setProperty("--sx", dx + "px");
+      spark.style.setProperty("--sy", dy + "px");
+      spark.style.setProperty("--dur", dur + "s");
+      spark.style.left = (4 + Math.random() * 20) + "px";
+      spark.style.top = "auto";
+      spark.style.bottom = "0";
+      track.appendChild(spark);
+      setTimeout(() => spark.remove(), dur * 1000 + 50);
+    }
+  }
+
+  // --- Maul mode toggle ---
+  function setMaulMode(on) {
+    maulMode = on;
+    if (on) {
+      track.classList.add("maul-mode");
+    } else {
+      track.classList.remove("maul-mode");
+      // If blade2 is visible, retract it
+      if (bladeEjected && blade2.style.display !== "none") {
+        setContactSparks2(false);
+        const emitter2 = document.getElementById("scrollsaber-emitter2");
+        if (emitter2) emitter2.style.boxShadow = "";
+        blade2.classList.remove("igniting");
+        blade2.classList.add("retracting");
+        blade2.addEventListener("animationend", () => {
+          blade2.classList.remove("retracting");
+          blade2.style.height = "0";
+          blade2.style.top = "";
+          blade2.style.display = "none";
+        }, { once: true });
+      }
+    }
+  }
+
   // --- Audio engine (file-based) ---
   function setSoundEnabled(on) {
     soundEnabled = on;
@@ -596,6 +892,7 @@
   // --- Click on empty track to jump ---
   function onTrackClick(e) {
     if (isDragging) return;
+    if (currentMode === "eject") return; // Eject: hilt-only interaction
     if (e.target.closest("#scrollsaber-blade")) return;
     if (e.target.closest("#scrollsaber-hilt")) return;
 
@@ -674,27 +971,28 @@
       track.classList.add("no-flicker");
       flickerRunning = false;
       const c = currentColor;
-      blade.style.boxShadow =
+      const staticShadow =
         `0 0 4px #fff, 0 0 6px #fff, ` +
         `0 0 10px ${c.color}, 0 0 20px ${c.color}, 0 0 35px ${c.color}, ` +
         `0 0 50px ${c.glowOuter}, 0 0 80px ${c.glowOuter}`;
+      blade.style.boxShadow = staticShadow;
+      if (maulMode) blade2.style.boxShadow = staticShadow;
       const emitter = document.getElementById("scrollsaber-emitter");
-      if (emitter) {
-        if (currentMode === "eject" && !bladeEjected) {
-          emitter.style.boxShadow = "";
-        } else {
-          emitter.style.boxShadow =
-            `0 2px 6px ${c.color}, 0 4px 14px ${c.glowOuter}, ` +
-            `inset 0 1px 0 rgba(255,255,255,0.3)`;
-        }
-      }
+      const emitter2 = document.getElementById("scrollsaber-emitter2");
+      const emitterOff = currentMode === "eject" && !bladeEjected;
+      const emitterShadow = emitterOff ? "" :
+        `0 2px 6px ${c.color}, 0 4px 14px ${c.glowOuter}, ` +
+        `inset 0 1px 0 rgba(255,255,255,0.3)`;
+      if (emitter) emitter.style.boxShadow = emitterShadow;
+      if (emitter2 && maulMode) emitter2.style.boxShadow = emitterShadow;
     }
   }
 
   function flickerLoop() {
     if (!blade || !flickerEnabled) { flickerRunning = false; return; }
     const bladeH = parseInt(blade.style.height) || 0;
-    if (bladeH <= 0) {
+    const blade2H = maulMode ? (parseInt(blade2.style.height) || 0) : 0;
+    if (bladeH <= 0 && blade2H <= 0) {
       requestAnimationFrame(flickerLoop);
       return;
     }
@@ -708,7 +1006,7 @@
     const r6 = 40 + Math.random() * 25;
     const r7 = 60 + Math.random() * 40;
 
-    blade.style.boxShadow =
+    const bladeShadow =
       `0 0 ${r1}px #fff, ` +
       `0 0 ${r2}px #fff, ` +
       `0 0 ${r3}px ${c.color}, ` +
@@ -716,18 +1014,24 @@
       `0 0 ${r5}px ${c.color}, ` +
       `0 0 ${r6}px ${c.glowOuter}, ` +
       `0 0 ${r7}px ${c.glowOuter}`;
+    blade.style.boxShadow = bladeShadow;
+    if (maulMode && blade2H > 0) blade2.style.boxShadow = bladeShadow;
 
     const emitter = document.getElementById("scrollsaber-emitter");
+    const emitter2El = maulMode ? document.getElementById("scrollsaber-emitter2") : null;
     if (emitter) {
       if (currentMode === "eject" && !bladeEjected) {
         emitter.style.boxShadow = "";
+        if (emitter2El) emitter2El.style.boxShadow = "";
       } else {
         const er = 4 + Math.random() * 4;
         const er2 = 10 + Math.random() * 8;
-        emitter.style.boxShadow =
+        const emitterShadow =
           `0 2px ${er}px ${c.color}, ` +
           `0 4px ${er2}px ${c.glowOuter}, ` +
           `inset 0 1px 0 rgba(255,255,255,0.3)`;
+        emitter.style.boxShadow = emitterShadow;
+        if (emitter2El) emitter2El.style.boxShadow = emitterShadow;
       }
     }
 
@@ -912,7 +1216,7 @@
 
     track.addEventListener("selectstart", (e) => e.preventDefault());
 
-    browser.storage.local.get(["saberColor", "saberCustomColor", "saberHilt", "saberFlicker", "saberLeftHand", "saberMode", "saberSound", "saberVolume", "saberWidth"]).then((result) => {
+    browser.storage.local.get(["saberColor", "saberCustomColor", "saberHilt", "saberFlicker", "saberLeftHand", "saberMode", "saberSound", "saberVolume", "saberWidth", "saberMaul"]).then((result) => {
       applySaberColor(result.saberColor || "blue", result.saberCustomColor);
       applyHilt(result.saberHilt || "luke");
       applyMode(result.saberMode || "eject");
@@ -928,6 +1232,7 @@
       setSoundEnabled(result.saberSound !== false);
       setSoundVolume(result.saberVolume != null ? result.saberVolume : 100);
       setBladeWidth(result.saberWidth != null ? result.saberWidth : 1);
+      if (result.saberMaul) setMaulMode(true);
     });
 
     browser.storage.onChanged.addListener((changes) => {
@@ -944,6 +1249,7 @@
       if (changes.saberSound) setSoundEnabled(!!changes.saberSound.newValue);
       if (changes.saberVolume) setSoundVolume(changes.saberVolume.newValue);
       if (changes.saberWidth) setBladeWidth(changes.saberWidth.newValue);
+      if (changes.saberMaul) setMaulMode(!!changes.saberMaul.newValue);
     });
   }
 

@@ -113,6 +113,42 @@ html {
   border-radius: 0 0 1px 1px;
 }
 
+/* Second emitter (Maul mode) — at pommel position, hidden by default */
+#scrollsaber-emitter2 {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  height: 8px;
+  border-radius: 2px 2px 0 0;
+  border: 1px solid #666;
+  border-bottom: 1px solid #999;
+  transform: scaleY(-1);
+  display: none;
+  box-shadow:
+    0 2px 6px var(--saber-glow-outer, rgba(68,170,255,0.3)),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+#scrollsaber-emitter2::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 3px;
+  right: 3px;
+  height: 3px;
+  background: var(--saber-color, #4af);
+  box-shadow:
+    0 0 6px var(--saber-color, #4af),
+    0 0 12px var(--saber-color, #4af),
+    0 2px 16px var(--saber-color, #4af);
+  border-radius: 0 0 1px 1px;
+}
+
+/* Show emitter2 / hide pommel in Maul mode */
+.maul-mode #scrollsaber-emitter2 { display: block; }
+.maul-mode #scrollsaber-pommel { display: none; }
+
 /* ============================================================
    LUKE (RotJ) — slim chrome, thin black grip rings
    ============================================================ */
@@ -142,7 +178,8 @@ html {
   background: radial-gradient(circle, #f55 20%, #a00 100%);
   box-shadow: 0 0 4px #f44, 0 0 8px rgba(255,50,50,0.5);
 }
-.hilt-luke #scrollsaber-emitter {
+.hilt-luke #scrollsaber-emitter,
+.hilt-luke #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #888 0%, #bbb 40%, #ddd 50%, #bbb 60%, #888 100%);
 }
 
@@ -188,7 +225,8 @@ html {
   box-shadow: 0 0 3px #f00, 0 0 6px rgba(255,0,0,0.6);
   width: 5px; height: 5px;
 }
-.hilt-vader #scrollsaber-emitter {
+.hilt-vader #scrollsaber-emitter,
+.hilt-vader #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #333 0%, #555 40%, #666 50%, #555 60%, #333 100%);
   border-color: #444;
   left: 4px; right: 4px;
@@ -235,7 +273,8 @@ html {
   box-shadow: 0 0 4px rgba(200,170,80,0.6);
   width: 5px; height: 5px;
 }
-.hilt-windu #scrollsaber-emitter {
+.hilt-windu #scrollsaber-emitter,
+.hilt-windu #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #8a7030 0%, #c9a84c 40%, #e0c060 50%, #c9a84c 60%, #8a7030 100%);
   border-color: #a08040;
 }
@@ -289,7 +328,8 @@ html {
   box-shadow: 0 0 3px rgba(200,200,200,0.4);
   width: 5px; height: 5px;
 }
-.hilt-obiwan #scrollsaber-emitter {
+.hilt-obiwan #scrollsaber-emitter,
+.hilt-obiwan #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #5a4a30 0%, #8a7050 40%, #a08860 50%, #8a7050 60%, #5a4a30 100%);
   border-color: #6a5838;
   height: 10px;
@@ -446,10 +486,12 @@ html {
 }
 
 /* ============ NO-FLICKER MODE ============ */
-.no-flicker #scrollsaber-blade:not(.igniting):not(.retracting) {
+.no-flicker #scrollsaber-blade:not(.igniting):not(.retracting),
+.no-flicker #scrollsaber-blade2:not(.igniting):not(.retracting) {
   animation: none !important;
 }
-.no-flicker #scrollsaber-blade:not(.igniting):not(.retracting)::after {
+.no-flicker #scrollsaber-blade:not(.igniting):not(.retracting)::after,
+.no-flicker #scrollsaber-blade2:not(.igniting):not(.retracting)::after {
   animation: none !important;
   opacity: 1 !important;
 }
@@ -520,10 +562,12 @@ html {
 }
 
 /* Eject mode: hide emitter glow until blade is ejected */
-.mode-eject:not(.blade-ejected) #scrollsaber-emitter {
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter,
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter2 {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
 }
-.mode-eject:not(.blade-ejected) #scrollsaber-emitter::after {
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter::after,
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter2::after {
   background: transparent;
   box-shadow: none;
 }
@@ -854,6 +898,219 @@ html {
   100% {
     opacity: 0;
     transform: translate(var(--drift, 0px), var(--fall, 30px)) scaleY(0.6);
+  }
+}
+
+/* ============ MAUL MODE — SECOND BLADE ============ */
+#scrollsaber-blade2 {
+  position: absolute;
+  left: var(--blade-inset, 8px);
+  right: var(--blade-inset, 8px);
+  height: 0;
+  display: none;
+  border-radius: 0 0 8px 8px;
+  cursor: grab;
+  background: linear-gradient(
+    90deg,
+    var(--saber-color, #4af) 0%,
+    rgba(255,255,255,0.7) 25%,
+    rgba(255,255,255,0.9) 50%,
+    rgba(255,255,255,0.7) 75%,
+    var(--saber-color, #4af) 100%
+  );
+  box-shadow:
+    0 0 4px #fff,
+    0 0 6px #fff,
+    0 0 10px var(--saber-color, #4af),
+    0 0 20px var(--saber-color, #4af),
+    0 0 35px var(--saber-color, #4af),
+    0 0 50px var(--saber-glow-outer, rgba(68,170,255,0.4)),
+    0 0 80px var(--saber-glow-outer, rgba(68,170,255,0.2));
+  animation: flicker-core 0.7s steps(1) infinite;
+}
+
+#scrollsaber-blade2::before {
+  content: "";
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  top: 0;
+  bottom: 6px;
+  border-radius: 0 0 4px 4px;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+#scrollsaber-blade2::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 0 0 11px 11px;
+  background: transparent;
+  box-shadow:
+    0 0 14px var(--saber-color, #4af),
+    0 0 30px var(--saber-glow-outer, rgba(68,170,255,0.3));
+  animation: flicker-outer 0.8s steps(1) infinite;
+  pointer-events: none;
+}
+
+#scrollsaber-blade2.igniting {
+  animation: ignite 0.4s ease-out forwards;
+  transform-origin: top center;
+}
+
+#scrollsaber-blade2.retracting {
+  animation: retract 0.3s ease-in forwards;
+  transform-origin: top center;
+}
+
+/* ============ BOTTOM CONTACT SPARKS (Maul blade hitting bottom) ============ */
+#scrollsaber-contact2 {
+  position: absolute;
+  bottom: -2px;
+  left: 2px;
+  right: 2px;
+  height: 6px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+}
+
+#scrollsaber-contact2.active {
+  opacity: 1;
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(255,255,255,0.95) 0%,
+    rgba(255,200,60,0.8) 25%,
+    rgba(255,120,20,0.4) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 6px #fff,
+    0 0 12px rgba(255,200,60,0.8),
+    0 0 24px rgba(255,120,20,0.5),
+    0 0 40px rgba(255,80,0,0.3);
+  animation: contact-pulse 0.1s ease-in-out infinite alternate;
+}
+
+/* ============ BOTTOM MELT EFFECT ============ */
+#scrollsaber-melt2 {
+  position: absolute;
+  bottom: -2px;
+  left: -4px;
+  right: -4px;
+  height: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  overflow: visible;
+}
+
+#scrollsaber-melt2.active {
+  border-radius:
+    var(--melt-blobL2, 40%) var(--melt-blobR2, 60%)
+    0 0 /
+    80% 80% 0 0;
+  background: radial-gradient(
+    ellipse 120% 70% at var(--melt-hotspot2, 55%) 100%,
+    rgba(255,255,240,0.95) 0%,
+    rgba(255,220,100,0.75) 18%,
+    rgba(255,140,20,0.5) 40%,
+    rgba(220,60,0,0.25) 65%,
+    transparent 100%
+  );
+  box-shadow:
+    0 -2px 6px rgba(255,200,60,0.5),
+    0 -4px 14px rgba(255,120,20,0.3),
+    0 0 20px rgba(255,80,0,0.2);
+  transform: skewX(var(--melt-skew2, 0deg));
+}
+
+#scrollsaber-melt2.active::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 15%;
+  height: 65%;
+  border-radius: 50% 35% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(
+    ellipse 90% 80% at 40% 100%,
+    rgba(255,255,255,0.6) 0%,
+    rgba(255,200,80,0.3) 40%,
+    transparent 100%
+  );
+  transform: skewX(calc(var(--melt-skew2, 0deg) * -1.5));
+}
+
+#scrollsaber-melt2.active::after {
+  content: "";
+  position: absolute;
+  bottom: 40%;
+  left: -2px;
+  right: -2px;
+  height: 80%;
+  border-radius: 30% 60% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(
+    ellipse 80% 90% at 60% 100%,
+    rgba(200,40,0,0.2) 0%,
+    rgba(120,10,0,0.08) 50%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* Bottom melt cooling */
+#scrollsaber-melt2.cooling {
+  animation: melt-cool-shape-bottom var(--cool-dur2, 1.5s) ease-out forwards;
+  border-radius:
+    var(--melt-blobL2, 40%) var(--melt-blobR2, 60%)
+    0 0 /
+    80% 80% 0 0;
+}
+
+#scrollsaber-melt2.cooling::before {
+  animation: melt-cool-inner var(--cool-dur2, 1.5s) ease-out forwards;
+}
+
+#scrollsaber-melt2.cooling::after {
+  animation: melt-cool-outer var(--cool-dur2, 1.5s) ease-out forwards;
+}
+
+@keyframes melt-cool-shape-bottom {
+  0% {
+    opacity: var(--cool-start-opacity2, 1);
+    background: radial-gradient(ellipse 120% 70% at var(--melt-hotspot2, 55%) 100%,
+      rgba(255,220,100,0.8) 0%, rgba(255,140,20,0.5) 30%,
+      rgba(200,50,0,0.25) 60%, transparent 100%);
+    box-shadow: 0 -2px 6px rgba(255,200,60,0.5), 0 -4px 14px rgba(255,120,20,0.3);
+  }
+  20% {
+    background: radial-gradient(ellipse 110% 65% at var(--melt-hotspot2, 55%) 100%,
+      rgba(255,160,40,0.65) 0%, rgba(220,70,0,0.4) 35%,
+      rgba(160,20,0,0.15) 65%, transparent 100%);
+    box-shadow: 0 -2px 5px rgba(255,140,20,0.3), 0 -3px 10px rgba(200,50,0,0.2);
+  }
+  45% {
+    background: radial-gradient(ellipse 100% 60% at var(--melt-hotspot2, 55%) 100%,
+      rgba(220,70,0,0.45) 0%, rgba(160,25,0,0.25) 40%,
+      rgba(80,5,0,0.08) 70%, transparent 100%);
+    box-shadow: 0 -1px 4px rgba(200,50,0,0.15);
+    opacity: calc(var(--cool-start-opacity2, 1) * 0.6);
+  }
+  70% {
+    background: radial-gradient(ellipse 90% 55% at var(--melt-hotspot2, 55%) 100%,
+      rgba(140,15,0,0.25) 0%, rgba(70,5,0,0.1) 50%, transparent 100%);
+    box-shadow: 0 -1px 3px rgba(120,10,0,0.08);
+    opacity: calc(var(--cool-start-opacity2, 1) * 0.3);
+  }
+  100% {
+    background: radial-gradient(ellipse 80% 50% at var(--melt-hotspot2, 55%) 100%,
+      rgba(50,3,0,0.08) 0%, transparent 60%);
+    box-shadow: none;
+    opacity: 0;
+    height: var(--cool-height2, 20px);
   }
 }
 

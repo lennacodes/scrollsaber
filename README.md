@@ -8,7 +8,7 @@ A Firefox extension that replaces your scrollbar with a lightsaber.
 ## Features
 
 **Three scrollbar modes:**
-- **Eject** — Double-click the hilt to ignite. Blade extends upward from the hilt with contact sparks, molten melt effects, and flying embers when the blade hits the top.
+- **Eject** — Double-click the hilt to ignite. Blade extends upward from the hilt with contact sparks, molten melt effects, and flying embers when the blade hits the top. Enable **Maul mode** for a double-bladed saber that extends from both ends.
 - **Saber** — Hilt moves as a scroll handle. Blade extends upward as you scroll.
 - **Static** — Hilt fixed at top, blade extends downward like a classic scrollbar.
 
@@ -22,6 +22,7 @@ A Firefox extension that replaces your scrollbar with a lightsaber.
 - Blue, Green, Red, Purple, Black (Darksaber), White, and a custom color picker with hue/brightness sliders.
 
 **Additional settings:**
+- Maul mode (double-bladed, eject only)
 - Blade flicker animation
 - Left-hand mode
 - Sound effects (eject/retract) with volume control

@@ -619,6 +619,31 @@ h1 {
   color: #999;
 }
 
+/* Maul toggle — disabled when not in eject mode */
+#maul-row.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+#maul-row.disabled.flash {
+  pointer-events: auto;
+  cursor: not-allowed;
+}
+
+.maul-hint {
+  font-size: 8px;
+  color: #f44;
+  letter-spacing: 0.3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.maul-hint.show {
+  opacity: 1;
+}
+
 /* ==============================
    SLIDERS
    ============================== */
