@@ -1248,7 +1248,7 @@
       }
       if (result.saberLeftHand) setLeftHand(true);
       setSoundEnabled(result.saberSound !== false);
-      setSoundVolume(result.saberVolume != null ? result.saberVolume : 100);
+      setSoundVolume(result.saberVolume != null ? result.saberVolume : 50);
       setBladeWidth(result.saberWidth != null ? result.saberWidth : 1);
       if (result.saberMaul) setMaulMode(true);
     });

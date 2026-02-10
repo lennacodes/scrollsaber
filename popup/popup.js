@@ -78,7 +78,7 @@ browser.storage.local.get(["saberColor", "saberCustomColor", "saberCustomHue", "
   soundToggle.checked = result.saberSound !== false;
   maulToggle.checked = !!result.saberMaul;
   updateMaulEnabled(currentMode);
-  volumeSlider.value = result.saberVolume != null ? result.saberVolume : 100;
+  volumeSlider.value = result.saberVolume != null ? result.saberVolume : 50;
   widthSlider.value = result.saberWidth != null ? result.saberWidth : 1;
 });
 
