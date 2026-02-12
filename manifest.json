@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "ScrollSaber",
   "version": "1.0",
-  "description": "Transforms your scrollbar into a lightsaber.",
+  "description": "Transforms your scrollbar into a beam sword.",
   "browser_specific_settings": {
     "gecko": {
       "id": "scrollsaber@lennacodes",

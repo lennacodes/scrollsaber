@@ -130,7 +130,7 @@ h1 {
   box-shadow: 0 0 4px #4af, 0 0 8px rgba(68,170,255,0.4);
 }
 
-/* Saber: hilt in middle, blade extending up */
+/* Sword: hilt in middle, blade extending up */
 .mode-icon-saber::before {
   content: "";
   position: absolute;
@@ -250,12 +250,12 @@ h1 {
   overflow: hidden;
 }
 
-/* Luke — chrome, thin rings */
-.hilt-preview-luke {
+/* Chrome — thin rings */
+.hilt-preview-chrome {
   background: linear-gradient(90deg, #666, #aaa, #ccc, #aaa, #666);
   border-color: #888;
 }
-.hilt-preview-luke::before {
+.hilt-preview-chrome::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -264,7 +264,7 @@ h1 {
     rgba(0,0,0,0.2) 4px, rgba(0,0,0,0.2) 5px
   );
 }
-.hilt-preview-luke::after {
+.hilt-preview-chrome::after {
   content: "";
   position: absolute;
   width: 3px; height: 3px;
@@ -275,12 +275,12 @@ h1 {
   transform: translate(-50%, -50%);
 }
 
-/* Vader — black, silver bands */
-.hilt-preview-vader {
+/* Obsidian — black, silver bands */
+.hilt-preview-obsidian {
   background: linear-gradient(90deg, #111, #222, #2a2a2a, #222, #111);
   border-color: #444;
 }
-.hilt-preview-vader::before {
+.hilt-preview-obsidian::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -291,7 +291,7 @@ h1 {
       transparent 65%, #777 65%, #777 68%, transparent 68%
     );
 }
-.hilt-preview-vader::after {
+.hilt-preview-obsidian::after {
   content: "";
   position: absolute;
   width: 3px; height: 3px;
@@ -302,12 +302,12 @@ h1 {
   transform: translate(-50%, -50%);
 }
 
-/* Windu — gold/electrum */
-.hilt-preview-windu {
+/* Gold — gold/electrum */
+.hilt-preview-gold {
   background: linear-gradient(90deg, #7a6530, #c9a84c, #e0c060, #c9a84c, #7a6530);
   border-color: #a08040;
 }
-.hilt-preview-windu::before {
+.hilt-preview-gold::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -316,7 +316,7 @@ h1 {
     rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px
   );
 }
-.hilt-preview-windu::after {
+.hilt-preview-gold::after {
   content: "";
   position: absolute;
   width: 3px; height: 3px;
@@ -327,12 +327,12 @@ h1 {
   transform: translate(-50%, -50%);
 }
 
-/* Obi-Wan — copper/brass, stepped bands */
-.hilt-preview-obiwan {
+/* Copper — copper/brass, stepped bands */
+.hilt-preview-copper {
   background: linear-gradient(90deg, #4a3828, #7a6040, #907858, #7a6040, #4a3828);
   border-color: #6a5838;
 }
-.hilt-preview-obiwan::before {
+.hilt-preview-copper::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -344,7 +344,7 @@ h1 {
       transparent 60%, rgba(200,170,130,0.15) 60%, rgba(200,170,130,0.15) 63%, transparent 63%
     );
 }
-.hilt-preview-obiwan::after {
+.hilt-preview-copper::after {
   content: "";
   position: absolute;
   width: 3px; height: 3px;
@@ -619,18 +619,18 @@ h1 {
   color: #999;
 }
 
-/* Maul toggle — disabled when not in eject mode */
-#maul-row.disabled {
+/* Dual toggle — disabled when not in eject mode */
+#dual-row.disabled {
   opacity: 0.35;
   pointer-events: none;
 }
 
-#maul-row.disabled.flash {
+#dual-row.disabled.flash {
   pointer-events: auto;
   cursor: not-allowed;
 }
 
-.maul-hint {
+.dual-hint {
   font-size: 8px;
   color: #f44;
   letter-spacing: 0.3px;
@@ -640,7 +640,7 @@ h1 {
   white-space: nowrap;
 }
 
-.maul-hint.show {
+.dual-hint.show {
   opacity: 1;
 }
 

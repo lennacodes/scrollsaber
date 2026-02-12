@@ -1,4 +1,4 @@
-// ScrollSaber — Three scrollbar modes: Classic, Saber, Eject
+// ScrollSaber — Three scrollbar modes: Classic, Sword, Eject
 
 (function () {
   "use strict";
@@ -14,7 +14,7 @@
     white:  { color: "#eef",  bright: "#fff",  glow: "#ddf",  glowOuter: "rgba(220,220,255,0.4)" },
   };
 
-  const VALID_HILTS = ["luke", "vader", "windu", "obiwan"];
+  const VALID_HILTS = ["chrome", "obsidian", "gold", "copper"];
   const VALID_MODES = ["classic", "saber", "eject"];
 
   const SCROLL_STEP = 80;
@@ -39,7 +39,7 @@
   let currentMode = "classic";
   let bladeEjected = false;
   let hasIgnited = false;
-  let maulMode = false;
+  let dualMode = false;
 
   // --- Flicker ---
   let flickerEnabled = true;
@@ -54,7 +54,7 @@
   let lastSparkRate = 0;
   let lastDripRate = 0;
 
-  // --- Contact sparks & melt (bottom — Maul mode) ---
+  // --- Contact sparks & melt (bottom — Dual mode) ---
   let contactSparksActive2 = false;
   let contactSparksInterval2 = null;
   let contactIntensity2 = 0;
@@ -131,7 +131,7 @@
 
   // --- Apply hilt style ---
   function applyHilt(name) {
-    if (!VALID_HILTS.includes(name)) name = "luke";
+    if (!VALID_HILTS.includes(name)) name = "chrome";
     VALID_HILTS.forEach(h => track.classList.remove("hilt-" + h));
     track.classList.add("hilt-" + name);
   }
@@ -160,7 +160,7 @@
       meltEl.removeAttribute("style");
     }
 
-    // Reset blade2 (Maul mode)
+    // Reset blade2 (Dual mode)
     blade2.style.height = "0";
     blade2.style.top = "";
     blade2.style.display = "none";
@@ -212,7 +212,7 @@
     return { bladeH, bladeTop, touching, pushDepth };
   }
 
-  // --- Maul mode: bottom blade geometry ---
+  // --- Dual mode: bottom blade geometry ---
   function getEjectBlade2Geometry(hiltTop, hiltH, trackH) {
     const fixedLen = Math.round(hiltH * BLADE_LENGTH_RATIO);
     const bladeStart = hiltTop + hiltH;
@@ -267,7 +267,7 @@
         bladeArea.style.setProperty("--blade-height", geo.bladeH + "px");
         setContactSparks(geo.touching, geo.pushDepth);
 
-        if (maulMode) {
+        if (dualMode) {
           const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
           blade2.style.top = geo2.bladeStart + "px";
           blade2.style.height = geo2.bladeH + "px";
@@ -278,7 +278,7 @@
         blade.style.top = "0";
         bladeArea.style.setProperty("--blade-height", "0px");
         setContactSparks(false);
-        if (maulMode) {
+        if (dualMode) {
           blade2.style.height = "0";
           setContactSparks2(false);
         }
@@ -388,7 +388,7 @@
         bladeArea.style.setProperty("--blade-height", geo.bladeH + "px");
         setContactSparks(geo.touching, geo.pushDepth);
 
-        if (maulMode) {
+        if (dualMode) {
           const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
           blade2.style.top = geo2.bladeStart + "px";
           blade2.style.height = geo2.bladeH + "px";
@@ -436,8 +436,8 @@
       }, { once: true });
       setContactSparks(geo.touching, geo.pushDepth);
 
-      // Maul mode — ignite bottom blade
-      if (maulMode) {
+      // Dual mode — ignite bottom blade
+      if (dualMode) {
         const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
         blade2.style.display = "block";
         blade2.style.top = geo2.bladeStart + "px";
@@ -469,8 +469,8 @@
         bladeArea.style.setProperty("--blade-height", "0px");
       }, { once: true });
 
-      // Maul mode — retract bottom blade
-      if (maulMode) {
+      // Dual mode — retract bottom blade
+      if (dualMode) {
         setContactSparks2(false);
         const emitter2 = document.getElementById("scrollsaber-emitter2");
         if (emitter2) emitter2.style.boxShadow = "";
@@ -672,7 +672,7 @@
     }
   }
 
-  // --- Bottom contact sparks + melt (Maul mode — blade hitting bottom) ---
+  // --- Bottom contact sparks + melt (Dual mode — blade hitting bottom) ---
   function jitterMelt2(meltEl) {
     if (!contactSparksActive2 || !meltEl) { meltJitterRAF2 = null; return; }
     const skew = ((Math.random() - 0.5) * 6).toFixed(1);
@@ -849,11 +849,11 @@
     }
   }
 
-  // --- Maul mode toggle ---
-  function setMaulMode(on) {
-    maulMode = on;
+  // --- Dual mode toggle ---
+  function setDualMode(on) {
+    dualMode = on;
     if (on) {
-      track.classList.add("maul-mode");
+      track.classList.add("dual-mode");
       // If blade is already ejected, ignite blade2 immediately
       if (currentMode === "eject" && bladeEjected) {
         const trackH = track.clientHeight;
@@ -873,7 +873,7 @@
         setContactSparks2(geo2.touching, geo2.pushDepth);
       }
     } else {
-      track.classList.remove("maul-mode");
+      track.classList.remove("dual-mode");
       // If blade2 is visible, retract it
       if (bladeEjected && blade2.style.display !== "none") {
         setContactSparks2(false);
@@ -929,7 +929,7 @@
     }
   }
 
-  // --- Saber color ---
+  // --- Blade color ---
   function hexToColorObj(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -994,7 +994,7 @@
         `0 0 10px ${c.color}, 0 0 20px ${c.color}, 0 0 35px ${c.color}, ` +
         `0 0 50px ${c.glowOuter}, 0 0 80px ${c.glowOuter}`;
       blade.style.boxShadow = staticShadow;
-      if (maulMode) blade2.style.boxShadow = staticShadow;
+      if (dualMode) blade2.style.boxShadow = staticShadow;
       const emitter = document.getElementById("scrollsaber-emitter");
       const emitter2 = document.getElementById("scrollsaber-emitter2");
       const emitterOff = currentMode === "eject" && !bladeEjected;
@@ -1002,14 +1002,14 @@
         `0 2px 6px ${c.color}, 0 4px 14px ${c.glowOuter}, ` +
         `inset 0 1px 0 rgba(255,255,255,0.3)`;
       if (emitter) emitter.style.boxShadow = emitterShadow;
-      if (emitter2 && maulMode) emitter2.style.boxShadow = emitterShadow;
+      if (emitter2 && dualMode) emitter2.style.boxShadow = emitterShadow;
     }
   }
 
   function flickerLoop() {
     if (!blade || !flickerEnabled) { flickerRunning = false; return; }
     const bladeH = parseInt(blade.style.height) || 0;
-    const blade2H = maulMode ? (parseInt(blade2.style.height) || 0) : 0;
+    const blade2H = dualMode ? (parseInt(blade2.style.height) || 0) : 0;
     if (bladeH <= 0 && blade2H <= 0) {
       requestAnimationFrame(flickerLoop);
       return;
@@ -1033,10 +1033,10 @@
       `0 0 ${r6}px ${c.glowOuter}, ` +
       `0 0 ${r7}px ${c.glowOuter}`;
     blade.style.boxShadow = bladeShadow;
-    if (maulMode && blade2H > 0) blade2.style.boxShadow = bladeShadow;
+    if (dualMode && blade2H > 0) blade2.style.boxShadow = bladeShadow;
 
     const emitter = document.getElementById("scrollsaber-emitter");
-    const emitter2El = maulMode ? document.getElementById("scrollsaber-emitter2") : null;
+    const emitter2El = dualMode ? document.getElementById("scrollsaber-emitter2") : null;
     if (emitter) {
       if (currentMode === "eject" && !bladeEjected) {
         emitter.style.boxShadow = "";
@@ -1236,7 +1236,7 @@
 
     browser.storage.local.get(["saberColor", "saberCustomColor", "saberHilt", "saberFlicker", "saberLeftHand", "saberMode", "saberSound", "saberVolume", "saberWidth", "saberMaul"]).then((result) => {
       applySaberColor(result.saberColor || "blue", result.saberCustomColor);
-      applyHilt(result.saberHilt || "luke");
+      applyHilt(result.saberHilt || "chrome");
       applyMode(result.saberMode || "eject");
       const flicker = result.saberFlicker !== false;
       flickerEnabled = flicker;
@@ -1250,7 +1250,7 @@
       setSoundEnabled(result.saberSound !== false);
       setSoundVolume(result.saberVolume != null ? result.saberVolume : 50);
       setBladeWidth(result.saberWidth != null ? result.saberWidth : 1);
-      if (result.saberMaul) setMaulMode(true);
+      if (result.saberMaul) setDualMode(true);
     });
 
     browser.storage.onChanged.addListener((changes) => {
@@ -1267,7 +1267,7 @@
       if (changes.saberSound) setSoundEnabled(!!changes.saberSound.newValue);
       if (changes.saberVolume) setSoundVolume(changes.saberVolume.newValue);
       if (changes.saberWidth) setBladeWidth(changes.saberWidth.newValue);
-      if (changes.saberMaul) setMaulMode(!!changes.saberMaul.newValue);
+      if (changes.saberMaul) setDualMode(!!changes.saberMaul.newValue);
     });
   }
 

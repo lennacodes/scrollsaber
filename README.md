@@ -1,6 +1,6 @@
 # ScrollSaber
 
-A Firefox extension that replaces your scrollbar with a lightsaber.
+A Firefox extension that replaces your scrollbar with a beam sword.
 
 ![Firefox](https://img.shields.io/badge/Firefox-Extension-ff7139?logo=firefoxbrowser&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue)
@@ -8,8 +8,8 @@ A Firefox extension that replaces your scrollbar with a lightsaber.
 ## Features
 
 **Three scrollbar modes:**
-- **Eject** — Double-click the hilt to ignite. Blade extends upward from the hilt with contact sparks, molten melt effects, and flying embers when the blade hits the top. Enable **Maul mode** for a double-bladed saber that extends from both ends.
-- **Saber** — Hilt moves as a scroll handle. Blade extends upward as you scroll.
+- **Eject** — Double-click the hilt to ignite. Blade extends upward from the hilt with contact sparks, molten melt effects, and flying embers when the blade hits the top. Enable **Dual mode** for a double-bladed sword that extends from both ends.
+- **Sword** — Hilt moves as a scroll handle. Blade extends upward as you scroll.
 - **Static** — Hilt fixed at top, blade extends downward like a classic scrollbar.
 
 **Four hilt designs:**
@@ -19,10 +19,10 @@ A Firefox extension that replaces your scrollbar with a lightsaber.
 - Copper stepped (brass tones, tiered shroud)
 
 **Seven blade colors:**
-- Blue, Green, Red, Purple, Black (Darksaber), White, and a custom color picker with hue/brightness sliders.
+- Blue, Green, Red, Purple, Black (Darksword), White, and a custom color picker with hue/brightness sliders.
 
 **Additional settings:**
-- Maul mode (double-bladed, eject only)
+- Dual mode (double-bladed, eject only)
 - Blade flicker animation
 - Left-hand mode
 - Sound effects (eject/retract) with volume control
@@ -51,7 +51,7 @@ No remote resources. No dependencies. Pure vanilla JS and CSS.
 ```
 scrollsaber/
   manifest.json         Extension manifest (v2)
-  scrollsaber.js        Content script — builds and drives the saber overlay
+  scrollsaber.js        Content script — builds and drives the sword overlay
   scrollsaber.css       All scrollbar, blade, hilt, spark, and melt styles
   popup/
     popup.html          Extension popup UI

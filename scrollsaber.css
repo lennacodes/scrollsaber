@@ -5,7 +5,7 @@ html {
 }
 
 /* ============================================
-   ScrollSaber — Lightsaber extending from hilt
+   ScrollSaber — Beam sword extending from hilt
    ============================================ */
 
 #scrollsaber-track {
@@ -113,7 +113,7 @@ html {
   border-radius: 0 0 1px 1px;
 }
 
-/* Second emitter (Maul mode) — at pommel position, hidden by default */
+/* Second emitter (Dual mode) — at pommel position, hidden by default */
 #scrollsaber-emitter2 {
   position: absolute;
   top: 0;
@@ -145,21 +145,21 @@ html {
   border-radius: 0 0 1px 1px;
 }
 
-/* Show emitter2 / hide pommel in Maul mode */
-.maul-mode #scrollsaber-emitter2 { display: block; }
-.maul-mode #scrollsaber-pommel { display: none; }
+/* Show emitter2 / hide pommel in Dual mode */
+.dual-mode #scrollsaber-emitter2 { display: block; }
+.dual-mode #scrollsaber-pommel { display: none; }
 
 /* ============================================================
-   LUKE (RotJ) — slim chrome, thin black grip rings
+   CHROME — slim chrome, thin black grip rings
    ============================================================ */
-.hilt-luke #scrollsaber-hilt { height: 54px; }
-.hilt-luke #scrollsaber-pommel {
+.hilt-chrome #scrollsaber-hilt { height: 54px; }
+.hilt-chrome #scrollsaber-pommel {
   background: linear-gradient(90deg, #444, #888, #aaa, #888, #444);
   border-color: #777;
   height: 5px;
   border-radius: 2px 2px 0 0;
 }
-.hilt-luke #scrollsaber-hilt-body {
+.hilt-chrome #scrollsaber-hilt-body {
   background: linear-gradient(90deg,
     #555 0%, #999 12%, #bbb 25%, #aaa 40%,
     #ccc 50%,
@@ -167,33 +167,33 @@ html {
   );
   border-color: #888;
 }
-.hilt-luke #scrollsaber-grip {
+.hilt-chrome #scrollsaber-grip {
   background: repeating-linear-gradient(180deg,
     transparent 0px, transparent 5px,
     rgba(0,0,0,0.2) 5px, rgba(0,0,0,0.2) 6px,
     transparent 6px, transparent 7px
   );
 }
-.hilt-luke #scrollsaber-switch {
+.hilt-chrome #scrollsaber-switch {
   background: radial-gradient(circle, #f55 20%, #a00 100%);
   box-shadow: 0 0 4px #f44, 0 0 8px rgba(255,50,50,0.5);
 }
-.hilt-luke #scrollsaber-emitter,
-.hilt-luke #scrollsaber-emitter2 {
+.hilt-chrome #scrollsaber-emitter,
+.hilt-chrome #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #888 0%, #bbb 40%, #ddd 50%, #bbb 60%, #888 100%);
 }
 
 /* ============================================================
-   VADER — wide black body, silver bands, aggressive
+   OBSIDIAN — wide black body, silver bands, aggressive
    ============================================================ */
-.hilt-vader #scrollsaber-hilt { height: 60px; }
-.hilt-vader #scrollsaber-pommel {
+.hilt-obsidian #scrollsaber-hilt { height: 60px; }
+.hilt-obsidian #scrollsaber-pommel {
   background: linear-gradient(90deg, #111, #333, #222, #333, #111);
   border-color: #333;
   height: 7px;
   left: 5px; right: 5px;
 }
-.hilt-vader #scrollsaber-hilt-body {
+.hilt-obsidian #scrollsaber-hilt-body {
   background: linear-gradient(90deg,
     #111 0%, #1a1a1a 10%, #222 25%,
     #2a2a2a 50%,
@@ -202,7 +202,7 @@ html {
   border-color: #444;
   left: 3px; right: 3px;
 }
-.hilt-vader #scrollsaber-grip {
+.hilt-obsidian #scrollsaber-grip {
   background:
     repeating-linear-gradient(180deg,
       transparent 0px, transparent 4px,
@@ -220,28 +220,28 @@ html {
       transparent 100%
     );
 }
-.hilt-vader #scrollsaber-switch {
+.hilt-obsidian #scrollsaber-switch {
   background: radial-gradient(circle, #f33 20%, #800 100%);
   box-shadow: 0 0 3px #f00, 0 0 6px rgba(255,0,0,0.6);
   width: 5px; height: 5px;
 }
-.hilt-vader #scrollsaber-emitter,
-.hilt-vader #scrollsaber-emitter2 {
+.hilt-obsidian #scrollsaber-emitter,
+.hilt-obsidian #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #333 0%, #555 40%, #666 50%, #555 60%, #333 100%);
   border-color: #444;
   left: 4px; right: 4px;
 }
 
 /* ============================================================
-   WINDU — electrum gold, sleek, ornate
+   GOLD — electrum gold, sleek, ornate
    ============================================================ */
-.hilt-windu #scrollsaber-hilt { height: 56px; }
-.hilt-windu #scrollsaber-pommel {
+.hilt-gold #scrollsaber-hilt { height: 56px; }
+.hilt-gold #scrollsaber-pommel {
   background: linear-gradient(90deg, #7a6530, #c9a84c, #e8c65a, #c9a84c, #7a6530);
   border-color: #a08040;
   height: 6px;
 }
-.hilt-windu #scrollsaber-hilt-body {
+.hilt-gold #scrollsaber-hilt-body {
   background: linear-gradient(90deg,
     #6a5520 0%, #a08030 12%, #c9a84c 25%, #b89838 40%,
     #d4b050 50%,
@@ -253,7 +253,7 @@ html {
     inset 0 -1px 0 rgba(0,0,0,0.4),
     0 2px 6px rgba(0,0,0,0.8);
 }
-.hilt-windu #scrollsaber-grip {
+.hilt-gold #scrollsaber-grip {
   background:
     repeating-linear-gradient(180deg,
       transparent 0px, transparent 3px,
@@ -268,27 +268,27 @@ html {
       transparent 55%, transparent 100%
     );
 }
-.hilt-windu #scrollsaber-switch {
+.hilt-gold #scrollsaber-switch {
   background: radial-gradient(circle, #e8c65a 20%, #8a7030 100%);
   box-shadow: 0 0 4px rgba(200,170,80,0.6);
   width: 5px; height: 5px;
 }
-.hilt-windu #scrollsaber-emitter,
-.hilt-windu #scrollsaber-emitter2 {
+.hilt-gold #scrollsaber-emitter,
+.hilt-gold #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #8a7030 0%, #c9a84c 40%, #e0c060 50%, #c9a84c 60%, #8a7030 100%);
   border-color: #a08040;
 }
 
 /* ============================================================
-   OBI-WAN (RotS) — stepped shroud, copper/brass tones
+   COPPER — stepped shroud, copper/brass tones
    ============================================================ */
-.hilt-obiwan #scrollsaber-hilt { height: 62px; }
-.hilt-obiwan #scrollsaber-pommel {
+.hilt-copper #scrollsaber-hilt { height: 62px; }
+.hilt-copper #scrollsaber-pommel {
   background: linear-gradient(90deg, #4a3828, #7a6040, #8a7050, #7a6040, #4a3828);
   border-color: #6a5838;
   height: 5px;
 }
-.hilt-obiwan #scrollsaber-hilt-body {
+.hilt-copper #scrollsaber-hilt-body {
   background: linear-gradient(90deg,
     #4a3a25 0%, #6a5535 12%, #8a7050 25%, #7a6040 40%,
     #907858 50%,
@@ -300,7 +300,7 @@ html {
     inset 0 -1px 0 rgba(0,0,0,0.5),
     0 2px 6px rgba(0,0,0,0.8);
 }
-.hilt-obiwan #scrollsaber-grip {
+.hilt-copper #scrollsaber-grip {
   background:
     /* Stepped shroud bands — distinctive tiered look */
     linear-gradient(180deg,
@@ -323,13 +323,13 @@ html {
       transparent 4px, transparent 5px
     );
 }
-.hilt-obiwan #scrollsaber-switch {
+.hilt-copper #scrollsaber-switch {
   background: radial-gradient(circle, #bbb 20%, #666 100%);
   box-shadow: 0 0 3px rgba(200,200,200,0.4);
   width: 5px; height: 5px;
 }
-.hilt-obiwan #scrollsaber-emitter,
-.hilt-obiwan #scrollsaber-emitter2 {
+.hilt-copper #scrollsaber-emitter,
+.hilt-copper #scrollsaber-emitter2 {
   background: linear-gradient(180deg, #5a4a30 0%, #8a7050 40%, #a08860 50%, #8a7050 60%, #5a4a30 100%);
   border-color: #6a5838;
   height: 10px;
@@ -538,7 +538,7 @@ html {
   100% { transform: translate(calc(-50% + var(--sx, 0px)), calc(-50% + var(--sy, 0px))) scale(0); opacity: 0; }
 }
 
-/* ============ SABER / EJECT MODES ============ */
+/* ============ SWORD / EJECT MODES ============ */
 
 /* In saber/eject modes, track uses block layout instead of flex column */
 .mode-saber#scrollsaber-track,
@@ -901,7 +901,7 @@ html {
   }
 }
 
-/* ============ MAUL MODE — SECOND BLADE ============ */
+/* ============ DUAL MODE — SECOND BLADE ============ */
 #scrollsaber-blade2 {
   position: absolute;
   left: var(--blade-inset, 8px);
@@ -964,7 +964,7 @@ html {
   transform-origin: top center;
 }
 
-/* ============ BOTTOM CONTACT SPARKS (Maul blade hitting bottom) ============ */
+/* ============ BOTTOM CONTACT SPARKS (Dual blade hitting bottom) ============ */
 #scrollsaber-contact2 {
   position: absolute;
   bottom: -2px;

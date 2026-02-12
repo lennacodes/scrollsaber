@@ -4,9 +4,9 @@ const hiltBtns = document.querySelectorAll(".hilt-btn");
 const flickerToggle = document.getElementById("flicker-toggle");
 const lefthandToggle = document.getElementById("lefthand-toggle");
 const soundToggle = document.getElementById("sound-toggle");
-const maulToggle = document.getElementById("maul-toggle");
-const maulRow = document.getElementById("maul-row");
-const maulHint = document.getElementById("maul-hint");
+const dualToggle = document.getElementById("dual-toggle");
+const dualRow = document.getElementById("dual-row");
+const dualHint = document.getElementById("dual-hint");
 const volumeSlider = document.getElementById("volume-slider");
 const widthSlider = document.getElementById("width-slider");
 const customToggle = document.getElementById("custom-toggle");
@@ -33,15 +33,15 @@ function updateCustomSwatch() {
   return hex;
 }
 
-function updateMaulEnabled(mode) {
+function updateDualEnabled(mode) {
   if (mode === "eject") {
-    maulRow.classList.remove("disabled", "flash");
-    maulHint.classList.remove("show");
+    dualRow.classList.remove("disabled", "flash");
+    dualHint.classList.remove("show");
   } else {
-    maulRow.classList.add("disabled");
-    // Turn off maul if switching away from eject
-    if (maulToggle.checked) {
-      maulToggle.checked = false;
+    dualRow.classList.add("disabled");
+    // Turn off dual if switching away from eject
+    if (dualToggle.checked) {
+      dualToggle.checked = false;
       browser.storage.local.set({ saberMaul: false });
     }
   }
@@ -51,7 +51,7 @@ function updateMaulEnabled(mode) {
 browser.storage.local.get(["saberColor", "saberCustomColor", "saberCustomHue", "saberCustomBright", "saberHilt", "saberFlicker", "saberLeftHand", "saberMode", "saberSound", "saberVolume", "saberWidth", "saberMaul"]).then((result) => {
   const currentMode = result.saberMode || "eject";
   const currentColor = result.saberColor || "blue";
-  const currentHilt = result.saberHilt || "luke";
+  const currentHilt = result.saberHilt || "chrome";
   const flickerOn = result.saberFlicker !== false;
 
   modeBtns.forEach((btn) => {
@@ -76,8 +76,8 @@ browser.storage.local.get(["saberColor", "saberCustomColor", "saberCustomHue", "
   flickerToggle.checked = flickerOn;
   lefthandToggle.checked = !!result.saberLeftHand;
   soundToggle.checked = result.saberSound !== false;
-  maulToggle.checked = !!result.saberMaul;
-  updateMaulEnabled(currentMode);
+  dualToggle.checked = !!result.saberMaul;
+  updateDualEnabled(currentMode);
   volumeSlider.value = result.saberVolume != null ? result.saberVolume : 50;
   widthSlider.value = result.saberWidth != null ? result.saberWidth : 1;
 });
@@ -88,7 +88,7 @@ modeBtns.forEach((btn) => {
     browser.storage.local.set({ saberMode: btn.dataset.mode });
     modeBtns.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    updateMaulEnabled(btn.dataset.mode);
+    updateDualEnabled(btn.dataset.mode);
   });
 });
 
@@ -160,21 +160,21 @@ soundToggle.addEventListener("change", () => {
   browser.storage.local.set({ saberSound: soundToggle.checked });
 });
 
-// Maul mode toggle
-maulToggle.addEventListener("change", () => {
-  browser.storage.local.set({ saberMaul: maulToggle.checked });
+// Dual mode toggle
+dualToggle.addEventListener("change", () => {
+  browser.storage.local.set({ saberMaul: dualToggle.checked });
 });
 
-// Show hint when clicking disabled maul toggle
-maulRow.addEventListener("click", (e) => {
-  if (!maulRow.classList.contains("disabled")) return;
+// Show hint when clicking disabled dual toggle
+dualRow.addEventListener("click", (e) => {
+  if (!dualRow.classList.contains("disabled")) return;
   e.preventDefault();
   e.stopPropagation();
-  maulRow.classList.add("flash");
-  maulHint.classList.add("show");
+  dualRow.classList.add("flash");
+  dualHint.classList.add("show");
   setTimeout(() => {
-    maulHint.classList.remove("show");
-    maulRow.classList.remove("flash");
+    dualHint.classList.remove("show");
+    dualRow.classList.remove("flash");
   }, 1500);
 });
 
