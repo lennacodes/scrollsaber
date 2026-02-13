@@ -3,3 +3,4 @@
 *.xpi
 web-ext-artifacts/
 .claude/
+dev/
