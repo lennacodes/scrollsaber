@@ -273,14 +273,15 @@
         if (!geo.touching) {
           ejectClashFired = false;
           setContactSparks(false);
-        } else if (geo.pushDepth > 0.95 && !ejectClashFired) {
-          ejectClashFired = true;
-          triggerClash("top");
+        } else if (geo.pushDepth > 0.99) {
+          if (!ejectClashFired) {
+            ejectClashFired = true;
+            triggerClash("top");
+          }
           setContactSparks(false);
-        } else if (!ejectClashFired) {
-          setContactSparks(true, geo.pushDepth);
         } else {
-          setContactSparks(false);
+          ejectClashFired = false;
+          setContactSparks(true, geo.pushDepth);
         }
 
         if (dualMode) {
@@ -291,14 +292,15 @@
           if (!geo2.touching) {
             ejectClashFired2 = false;
             setContactSparks2(false);
-          } else if (geo2.pushDepth > 0.95 && !ejectClashFired2) {
-            ejectClashFired2 = true;
-            triggerClash("bottom");
+          } else if (geo2.pushDepth > 0.99) {
+            if (!ejectClashFired2) {
+              ejectClashFired2 = true;
+              triggerClash("bottom");
+            }
             setContactSparks2(false);
-          } else if (!ejectClashFired2) {
-            setContactSparks2(true, geo2.pushDepth);
           } else {
-            setContactSparks2(false);
+            ejectClashFired2 = false;
+            setContactSparks2(true, geo2.pushDepth);
           }
         }
       } else {
@@ -418,14 +420,15 @@
         if (!geo.touching) {
           ejectClashFired = false;
           setContactSparks(false);
-        } else if (geo.pushDepth > 0.95 && !ejectClashFired) {
-          ejectClashFired = true;
-          triggerClash("top");
+        } else if (geo.pushDepth > 0.99) {
+          if (!ejectClashFired) {
+            ejectClashFired = true;
+            triggerClash("top");
+          }
           setContactSparks(false);
-        } else if (!ejectClashFired) {
-          setContactSparks(true, geo.pushDepth);
         } else {
-          setContactSparks(false);
+          ejectClashFired = false;
+          setContactSparks(true, geo.pushDepth);
         }
 
         if (dualMode) {
@@ -436,14 +439,15 @@
           if (!geo2.touching) {
             ejectClashFired2 = false;
             setContactSparks2(false);
-          } else if (geo2.pushDepth > 0.95 && !ejectClashFired2) {
-            ejectClashFired2 = true;
-            triggerClash("bottom");
+          } else if (geo2.pushDepth > 0.99) {
+            if (!ejectClashFired2) {
+              ejectClashFired2 = true;
+              triggerClash("bottom");
+            }
             setContactSparks2(false);
-          } else if (!ejectClashFired2) {
-            setContactSparks2(true, geo2.pushDepth);
           } else {
-            setContactSparks2(false);
+            ejectClashFired2 = false;
+            setContactSparks2(true, geo2.pushDepth);
           }
         }
       }
