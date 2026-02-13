@@ -1,0 +1,732 @@
+body {
+  width: 220px;
+  padding: 10px;
+  margin: 0;
+  background: #0a0a0f;
+  color: #ccc;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 60%;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12px 10px, #fff, transparent),
+    radial-gradient(1px 1px at 58px 22px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 95px 6px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 140px 18px, rgba(255,255,255,0.85), transparent),
+    radial-gradient(1px 1px at 198px 12px, #fff, transparent),
+    radial-gradient(1px 1px at 32px 38px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 170px 32px, #fff, transparent),
+    radial-gradient(1px 1px at 78px 48px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 118px 40px, rgba(255,255,255,0.85), transparent),
+    radial-gradient(1px 1px at 210px 44px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 22px 62px, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 150px 58px, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at 48px 76px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 185px 70px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 105px 82px, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 8px 90px, rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 230px 28px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 65px 95px, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1.5px 1.5px at 130px 14px, #fff, transparent),
+    radial-gradient(1px 1px at 160px 88px, rgba(255,255,255,0.3), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #eee;
+  text-shadow: 0 0 20px rgba(100, 160, 255, 0.3);
+}
+
+.section-label {
+  text-align: center;
+  font-size: 9px;
+  color: #99a;
+  margin: 0 0 5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ==============================
+   MODE SELECTOR
+   ============================== */
+.modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 2px 4px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  background: #111118;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-btn:hover {
+  border-color: #555;
+  background: #1a1a22;
+}
+
+.mode-btn.active {
+  border-color: #4af;
+  background: #0f1520;
+  box-shadow: 0 0 10px rgba(68,170,255,0.15);
+}
+
+/* Mode icons — mini visual representations */
+.mode-icon {
+  display: block;
+  width: 12px;
+  height: 28px;
+  position: relative;
+}
+
+/* Classic: hilt at top, blade extending down */
+.mode-icon-classic::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 2px;
+  right: 2px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #555, #999, #555);
+  border: 1px solid #666;
+}
+.mode-icon-classic::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 3px;
+  right: 3px;
+  height: 14px;
+  border-radius: 0 0 3px 3px;
+  background: #4af;
+  box-shadow: 0 0 4px #4af, 0 0 8px rgba(68,170,255,0.4);
+}
+
+/* Sword: hilt in middle, blade extending up */
+.mode-icon-saber::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 3px;
+  right: 3px;
+  height: 14px;
+  border-radius: 3px 3px 0 0;
+  background: #4af;
+  box-shadow: 0 0 4px #4af, 0 0 8px rgba(68,170,255,0.4);
+}
+.mode-icon-saber::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 2px;
+  right: 2px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #555, #999, #555);
+  border: 1px solid #666;
+}
+
+/* Eject: hilt in middle, no blade (dormant) */
+.mode-icon-eject::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 2px;
+  right: 2px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #555, #999, #555);
+  border: 1px solid #666;
+}
+.mode-icon-eject::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 3px;
+  right: 3px;
+  height: 5px;
+  border-radius: 3px 3px 0 0;
+  background: rgba(68,170,255,0.25);
+  border: 1px dashed rgba(68,170,255,0.4);
+  border-bottom: none;
+}
+
+.mode-hint {
+  font-size: 9px;
+  color: #4af;
+  letter-spacing: 0.3px;
+  text-shadow: 0 0 6px rgba(68,170,255,0.3);
+  white-space: nowrap;
+}
+
+.mode-btn .label {
+  font-size: 9px;
+  color: #666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.mode-btn:hover .label {
+  color: #bbb;
+}
+
+.mode-btn.active .label {
+  color: #4af;
+  text-shadow: 0 0 6px rgba(68,170,255,0.3);
+}
+
+/* ==============================
+   HILT SELECTOR
+   ============================== */
+.hilts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.hilt-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 2px 4px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  background: #111118;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hilt-btn:hover {
+  border-color: #555;
+  background: #1a1a22;
+}
+
+.hilt-btn.active {
+  border-color: #888;
+  background: #1a1a22;
+  box-shadow: 0 0 10px rgba(150,150,150,0.15);
+}
+
+/* Mini hilt previews */
+.hilt-preview {
+  display: block;
+  width: 10px;
+  height: 28px;
+  border-radius: 2px;
+  border: 1px solid #444;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Chrome — thin rings */
+.hilt-preview-chrome {
+  background: linear-gradient(90deg, #666, #aaa, #ccc, #aaa, #666);
+  border-color: #888;
+}
+.hilt-preview-chrome::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg,
+    transparent 0px, transparent 4px,
+    rgba(0,0,0,0.2) 4px, rgba(0,0,0,0.2) 5px
+  );
+}
+.hilt-preview-chrome::after {
+  content: "";
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #f44;
+  box-shadow: 0 0 3px #f44;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Obsidian — black, silver bands */
+.hilt-preview-obsidian {
+  background: linear-gradient(90deg, #111, #222, #2a2a2a, #222, #111);
+  border-color: #444;
+}
+.hilt-preview-obsidian::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      transparent 15%, #777 15%, #777 18%, transparent 18%,
+      transparent 40%, #777 40%, #777 43%, transparent 43%,
+      transparent 65%, #777 65%, #777 68%, transparent 68%
+    );
+}
+.hilt-preview-obsidian::after {
+  content: "";
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #f00;
+  box-shadow: 0 0 3px #f00;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Gold — gold/electrum */
+.hilt-preview-gold {
+  background: linear-gradient(90deg, #7a6530, #c9a84c, #e0c060, #c9a84c, #7a6530);
+  border-color: #a08040;
+}
+.hilt-preview-gold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px
+  );
+}
+.hilt-preview-gold::after {
+  content: "";
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #e8c65a;
+  box-shadow: 0 0 3px rgba(200,170,80,0.6);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Copper — copper/brass, stepped bands */
+.hilt-preview-copper {
+  background: linear-gradient(90deg, #4a3828, #7a6040, #907858, #7a6040, #4a3828);
+  border-color: #6a5838;
+}
+.hilt-preview-copper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      transparent 10%, rgba(200,170,130,0.2) 10%, rgba(200,170,130,0.2) 13%, transparent 13%,
+      transparent 25%, rgba(80,60,40,0.4) 25%, rgba(80,60,40,0.4) 32%, transparent 32%,
+      transparent 45%, rgba(80,60,40,0.3) 45%, rgba(80,60,40,0.3) 52%, transparent 52%,
+      transparent 60%, rgba(200,170,130,0.15) 60%, rgba(200,170,130,0.15) 63%, transparent 63%
+    );
+}
+.hilt-preview-copper::after {
+  content: "";
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #bbb;
+  box-shadow: 0 0 2px rgba(200,200,200,0.4);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hilt-btn .label {
+  font-size: 9px;
+  color: #666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.hilt-btn:hover .label,
+.hilt-btn.active .label {
+  color: #bbb;
+}
+
+/* ==============================
+   COLOR SELECTOR
+   ============================== */
+.colors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.saber-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 5px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  background: #111118;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saber-btn:hover {
+  border-color: var(--c);
+  background: #16161f;
+  box-shadow: 0 0 10px var(--cg), inset 0 0 8px rgba(0,0,0,0.5);
+}
+
+.saber-btn.active {
+  border-color: var(--c);
+  background: #16161f;
+  box-shadow: 0 0 14px var(--cg), inset 0 0 10px rgba(0,0,0,0.4);
+}
+
+.saber-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 8px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.mini-hilt {
+  width: 6px;
+  height: 8px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, #444, #777, #444);
+  border: 1px solid #555;
+}
+
+.blade-glow {
+  width: 4px;
+  height: 18px;
+  border-radius: 0 0 2px 2px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255,255,255,0.9) 0%,
+    rgba(255,255,255,0.5) 30%,
+    var(--c) 70%
+  );
+  box-shadow:
+    0 0 3px #fff,
+    0 0 6px var(--c),
+    0 0 12px var(--c),
+    0 0 20px var(--cg);
+  transition: all 0.2s;
+}
+
+.saber-btn:hover .blade-glow,
+.saber-btn.active .blade-glow {
+  height: 22px;
+  box-shadow:
+    0 0 4px #fff,
+    0 0 8px var(--c),
+    0 0 16px var(--c),
+    0 0 28px var(--cg);
+}
+
+.saber-btn .label {
+  font-size: 9px;
+  color: #888;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.saber-btn:hover .label,
+.saber-btn.active .label {
+  color: var(--c);
+  text-shadow: 0 0 8px var(--cg);
+}
+
+/* ==============================
+   CUSTOM COLOR PICKER
+   ============================== */
+.custom-color {
+  margin-top: 4px;
+}
+
+.custom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  background: #111118;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-btn:hover {
+  border-color: #555;
+  background: #1a1a22;
+}
+
+.custom-color.active .custom-btn {
+  border-color: #888;
+  background: #1a1a22;
+  box-shadow: 0 0 10px rgba(150,150,150,0.15);
+}
+
+.custom-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4af;
+  box-shadow: 0 0 6px rgba(68,170,255,0.5);
+  transition: all 0.2s;
+}
+
+.custom-btn .label {
+  font-size: 9px;
+  color: #666;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.custom-color.active .custom-btn .label {
+  color: #bbb;
+}
+
+.custom-panel {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 6px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  background: #0d0d14;
+}
+
+.custom-color.open .custom-panel {
+  display: flex;
+}
+
+/* Hue slider — rainbow gradient track */
+.hue-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right,
+    hsl(0,100%,50%), hsl(30,100%,50%), hsl(60,100%,50%),
+    hsl(90,100%,50%), hsl(120,100%,50%), hsl(150,100%,50%),
+    hsl(180,100%,50%), hsl(210,100%,50%), hsl(240,100%,50%),
+    hsl(270,100%,50%), hsl(300,100%,50%), hsl(330,100%,50%),
+    hsl(360,100%,50%)
+  );
+  border: none;
+}
+
+.hue-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4af;
+  border: none;
+  box-shadow: 0 0 4px rgba(68,170,255,0.5);
+  cursor: pointer;
+  margin-top: -3px;
+}
+
+/* ==============================
+   SETTINGS TOGGLE
+   ============================== */
+.settings {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #1a1a22;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-slider {
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+  background: #222;
+  border: 1px solid #333;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-slider::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #555;
+  top: 2px;
+  left: 2px;
+  transition: all 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: #1a2a3a;
+  border-color: #4af;
+  box-shadow: 0 0 6px rgba(68,170,255,0.3);
+}
+
+.toggle input:checked + .toggle-slider::after {
+  background: #4af;
+  left: 14px;
+  box-shadow: 0 0 4px #4af;
+}
+
+.toggle-label {
+  font-size: 10px;
+  color: #666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.toggle input:checked ~ .toggle-label {
+  color: #999;
+}
+
+/* Dual toggle — disabled when not in eject mode */
+#dual-row.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+#dual-row.disabled.flash {
+  pointer-events: auto;
+  cursor: not-allowed;
+}
+
+.dual-hint {
+  font-size: 8px;
+  color: #f44;
+  letter-spacing: 0.3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.dual-hint.show {
+  opacity: 1;
+}
+
+/* ==============================
+   SLIDERS
+   ============================== */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.slider-label {
+  font-size: 10px;
+  color: #666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  min-width: 42px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: #222;
+  border: 1px solid #333;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4af;
+  border: none;
+  box-shadow: 0 0 4px rgba(68,170,255,0.5);
+  cursor: pointer;
+  margin-top: -5px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #222;
+}
+
+/* ==============================
+   SUPPORT BUTTON
+   ============================== */
+.support-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 6px 0;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #ffd700;
+  background: #111118;
+  border: 1px solid #ffd700;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(255,215,0,0.15);
+  text-shadow: 0 0 4px rgba(255,215,0,0.2);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.support-btn:hover {
+  color: #4f4;
+  border-color: #4f4;
+  background: #0a1a0a;
+  box-shadow: 0 0 16px rgba(68,255,68,0.3);
+  text-shadow: 0 0 8px rgba(68,255,68,0.4);
+}

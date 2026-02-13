@@ -1,0 +1,1131 @@
+/* Hide native scrollbar and make room for the saber track */
+html {
+  scrollbar-width: none !important;
+  margin-right: 28px !important;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   ScrollSaber — Beam sword extending from hilt
+   ============================================ */
+
+#scrollsaber-track {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 100vh;
+  background: #050508;
+  border-left: 1px solid #111;
+  z-index: 2147483647;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HILT — shared structure, overridden per variant
+   ============================================================ */
+#scrollsaber-hilt {
+  width: 100%;
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+  z-index: 2;
+  height: 56px;
+  overflow: hidden;
+}
+
+/* Pommel — top cap */
+#scrollsaber-pommel {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  right: 6px;
+  height: 6px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, #333, #666, #555, #777, #555, #666, #333);
+  border: 1px solid #555;
+  border-bottom: none;
+}
+
+/* Main hilt body */
+#scrollsaber-hilt-body {
+  position: absolute;
+  top: 5px;
+  left: 4px;
+  right: 4px;
+  bottom: 8px;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid #555;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    inset 0 -1px 0 rgba(0,0,0,0.5),
+    0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* Grip texture layer */
+#scrollsaber-grip {
+  position: absolute;
+  inset: 0;
+}
+
+/* Activation button */
+#scrollsaber-switch {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+/* Emitter */
+#scrollsaber-emitter {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
+  right: 5px;
+  height: 8px;
+  border-radius: 0 0 2px 2px;
+  border: 1px solid #666;
+  border-top: 1px solid #999;
+  box-shadow:
+    0 2px 6px var(--saber-glow-outer, rgba(68,170,255,0.3)),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+/* Emitter glow slit */
+#scrollsaber-emitter::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 3px;
+  right: 3px;
+  height: 3px;
+  background: var(--saber-color, #4af);
+  box-shadow:
+    0 0 6px var(--saber-color, #4af),
+    0 0 12px var(--saber-color, #4af),
+    0 2px 16px var(--saber-color, #4af);
+  border-radius: 0 0 1px 1px;
+}
+
+/* Second emitter (Dual mode) — at pommel position, hidden by default */
+#scrollsaber-emitter2 {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  height: 8px;
+  border-radius: 2px 2px 0 0;
+  border: 1px solid #666;
+  border-bottom: 1px solid #999;
+  transform: scaleY(-1);
+  display: none;
+  box-shadow:
+    0 2px 6px var(--saber-glow-outer, rgba(68,170,255,0.3)),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+#scrollsaber-emitter2::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 3px;
+  right: 3px;
+  height: 3px;
+  background: var(--saber-color, #4af);
+  box-shadow:
+    0 0 6px var(--saber-color, #4af),
+    0 0 12px var(--saber-color, #4af),
+    0 2px 16px var(--saber-color, #4af);
+  border-radius: 0 0 1px 1px;
+}
+
+/* Show emitter2 / hide pommel in Dual mode */
+.dual-mode #scrollsaber-emitter2 { display: block; }
+.dual-mode #scrollsaber-pommel { display: none; }
+
+/* ============================================================
+   CHROME — slim chrome, thin black grip rings
+   ============================================================ */
+.hilt-chrome #scrollsaber-hilt { height: 54px; }
+.hilt-chrome #scrollsaber-pommel {
+  background: linear-gradient(90deg, #444, #888, #aaa, #888, #444);
+  border-color: #777;
+  height: 5px;
+  border-radius: 2px 2px 0 0;
+}
+.hilt-chrome #scrollsaber-hilt-body {
+  background: linear-gradient(90deg,
+    #555 0%, #999 12%, #bbb 25%, #aaa 40%,
+    #ccc 50%,
+    #aaa 60%, #bbb 75%, #999 88%, #555 100%
+  );
+  border-color: #888;
+}
+.hilt-chrome #scrollsaber-grip {
+  background: repeating-linear-gradient(180deg,
+    transparent 0px, transparent 5px,
+    rgba(0,0,0,0.2) 5px, rgba(0,0,0,0.2) 6px,
+    transparent 6px, transparent 7px
+  );
+}
+.hilt-chrome #scrollsaber-switch {
+  background: radial-gradient(circle, #f55 20%, #a00 100%);
+  box-shadow: 0 0 4px #f44, 0 0 8px rgba(255,50,50,0.5);
+}
+.hilt-chrome #scrollsaber-emitter,
+.hilt-chrome #scrollsaber-emitter2 {
+  background: linear-gradient(180deg, #888 0%, #bbb 40%, #ddd 50%, #bbb 60%, #888 100%);
+}
+
+/* ============================================================
+   OBSIDIAN — wide black body, silver bands, aggressive
+   ============================================================ */
+.hilt-obsidian #scrollsaber-hilt { height: 60px; }
+.hilt-obsidian #scrollsaber-pommel {
+  background: linear-gradient(90deg, #111, #333, #222, #333, #111);
+  border-color: #333;
+  height: 7px;
+  left: 5px; right: 5px;
+}
+.hilt-obsidian #scrollsaber-hilt-body {
+  background: linear-gradient(90deg,
+    #111 0%, #1a1a1a 10%, #222 25%,
+    #2a2a2a 50%,
+    #222 75%, #1a1a1a 90%, #111 100%
+  );
+  border-color: #444;
+  left: 3px; right: 3px;
+}
+.hilt-obsidian #scrollsaber-grip {
+  background:
+    repeating-linear-gradient(180deg,
+      transparent 0px, transparent 4px,
+      rgba(255,255,255,0.08) 4px, rgba(255,255,255,0.08) 5px,
+      transparent 5px, transparent 6px
+    ),
+    /* Silver bands */
+    linear-gradient(180deg,
+      transparent 0%, transparent 15%,
+      #666 15%, #888 17%, #666 19%, transparent 19%,
+      transparent 40%,
+      #666 40%, #888 42%, #666 44%, transparent 44%,
+      transparent 65%,
+      #666 65%, #888 67%, #666 69%, transparent 69%,
+      transparent 100%
+    );
+}
+.hilt-obsidian #scrollsaber-switch {
+  background: radial-gradient(circle, #f33 20%, #800 100%);
+  box-shadow: 0 0 3px #f00, 0 0 6px rgba(255,0,0,0.6);
+  width: 5px; height: 5px;
+}
+.hilt-obsidian #scrollsaber-emitter,
+.hilt-obsidian #scrollsaber-emitter2 {
+  background: linear-gradient(180deg, #333 0%, #555 40%, #666 50%, #555 60%, #333 100%);
+  border-color: #444;
+  left: 4px; right: 4px;
+}
+
+/* ============================================================
+   GOLD — electrum gold, sleek, ornate
+   ============================================================ */
+.hilt-gold #scrollsaber-hilt { height: 56px; }
+.hilt-gold #scrollsaber-pommel {
+  background: linear-gradient(90deg, #7a6530, #c9a84c, #e8c65a, #c9a84c, #7a6530);
+  border-color: #a08040;
+  height: 6px;
+}
+.hilt-gold #scrollsaber-hilt-body {
+  background: linear-gradient(90deg,
+    #6a5520 0%, #a08030 12%, #c9a84c 25%, #b89838 40%,
+    #d4b050 50%,
+    #b89838 60%, #c9a84c 75%, #a08030 88%, #6a5520 100%
+  );
+  border-color: #b89838;
+  box-shadow:
+    inset 0 1px 0 rgba(255,230,150,0.3),
+    inset 0 -1px 0 rgba(0,0,0,0.4),
+    0 2px 6px rgba(0,0,0,0.8);
+}
+.hilt-gold #scrollsaber-grip {
+  background:
+    repeating-linear-gradient(180deg,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px,
+      rgba(255,230,150,0.1) 4px, rgba(255,230,150,0.1) 5px,
+      transparent 5px, transparent 6px
+    ),
+    /* Electrum accent stripe */
+    linear-gradient(180deg,
+      transparent 0%, transparent 45%,
+      rgba(255,230,150,0.25) 45%, rgba(255,230,150,0.25) 55%,
+      transparent 55%, transparent 100%
+    );
+}
+.hilt-gold #scrollsaber-switch {
+  background: radial-gradient(circle, #e8c65a 20%, #8a7030 100%);
+  box-shadow: 0 0 4px rgba(200,170,80,0.6);
+  width: 5px; height: 5px;
+}
+.hilt-gold #scrollsaber-emitter,
+.hilt-gold #scrollsaber-emitter2 {
+  background: linear-gradient(180deg, #8a7030 0%, #c9a84c 40%, #e0c060 50%, #c9a84c 60%, #8a7030 100%);
+  border-color: #a08040;
+}
+
+/* ============================================================
+   COPPER — stepped shroud, copper/brass tones
+   ============================================================ */
+.hilt-copper #scrollsaber-hilt { height: 62px; }
+.hilt-copper #scrollsaber-pommel {
+  background: linear-gradient(90deg, #4a3828, #7a6040, #8a7050, #7a6040, #4a3828);
+  border-color: #6a5838;
+  height: 5px;
+}
+.hilt-copper #scrollsaber-hilt-body {
+  background: linear-gradient(90deg,
+    #4a3a25 0%, #6a5535 12%, #8a7050 25%, #7a6040 40%,
+    #907858 50%,
+    #7a6040 60%, #8a7050 75%, #6a5535 88%, #4a3a25 100%
+  );
+  border-color: #6a5838;
+  box-shadow:
+    inset 0 1px 0 rgba(200,170,130,0.2),
+    inset 0 -1px 0 rgba(0,0,0,0.5),
+    0 2px 6px rgba(0,0,0,0.8);
+}
+.hilt-copper #scrollsaber-grip {
+  background:
+    /* Stepped shroud bands — distinctive tiered look */
+    linear-gradient(180deg,
+      transparent 0%, transparent 10%,
+      rgba(200,170,130,0.15) 10%, rgba(200,170,130,0.15) 12%,
+      transparent 12%, transparent 22%,
+      rgba(100,80,50,0.3) 22%, rgba(100,80,50,0.3) 28%,
+      transparent 28%, transparent 32%,
+      rgba(200,170,130,0.2) 32%, rgba(200,170,130,0.2) 34%,
+      transparent 34%, transparent 44%,
+      rgba(100,80,50,0.25) 44%, rgba(100,80,50,0.25) 50%,
+      transparent 50%, transparent 55%,
+      rgba(200,170,130,0.15) 55%, rgba(200,170,130,0.15) 57%,
+      transparent 57%, transparent 100%
+    ),
+    /* Fine grip texture */
+    repeating-linear-gradient(180deg,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px,
+      transparent 4px, transparent 5px
+    );
+}
+.hilt-copper #scrollsaber-switch {
+  background: radial-gradient(circle, #bbb 20%, #666 100%);
+  box-shadow: 0 0 3px rgba(200,200,200,0.4);
+  width: 5px; height: 5px;
+}
+.hilt-copper #scrollsaber-emitter,
+.hilt-copper #scrollsaber-emitter2 {
+  background: linear-gradient(180deg, #5a4a30 0%, #8a7050 40%, #a08860 50%, #8a7050 60%, #5a4a30 100%);
+  border-color: #6a5838;
+  height: 10px;
+}
+
+/* Hover feedback — all hilts */
+#scrollsaber-hilt:hover #scrollsaber-hilt-body {
+  filter: brightness(1.15);
+}
+
+/* ============ BLADE AREA ============ */
+#scrollsaber-blade-area {
+  flex: 1;
+  position: relative;
+  overflow: visible;
+  cursor: pointer;
+}
+
+/* ============ BLADE ============ */
+#scrollsaber-blade {
+  position: absolute;
+  top: 0;
+  left: var(--blade-inset, 8px);
+  right: var(--blade-inset, 8px);
+  height: 0;
+  border-radius: 0 0 8px 8px;
+  cursor: grab;
+  background: linear-gradient(
+    90deg,
+    var(--saber-color, #4af) 0%,
+    rgba(255,255,255,0.7) 25%,
+    rgba(255,255,255,0.9) 50%,
+    rgba(255,255,255,0.7) 75%,
+    var(--saber-color, #4af) 100%
+  );
+  box-shadow:
+    0 0 4px #fff,
+    0 0 6px #fff,
+    0 0 10px var(--saber-color, #4af),
+    0 0 20px var(--saber-color, #4af),
+    0 0 35px var(--saber-color, #4af),
+    0 0 50px var(--saber-glow-outer, rgba(68,170,255,0.4)),
+    0 0 80px var(--saber-glow-outer, rgba(68,170,255,0.2));
+}
+
+/* Core highlight streak */
+#scrollsaber-blade::before {
+  content: "";
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  top: 0;
+  bottom: 6px;
+  border-radius: 0 0 4px 4px;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+/* --- Flicker layers --- */
+@keyframes flicker-outer {
+  0%   { opacity: 0.85; }
+  4%   { opacity: 1; }
+  8%   { opacity: 0.78; }
+  12%  { opacity: 0.95; }
+  15%  { opacity: 0.7; }
+  19%  { opacity: 0.92; }
+  24%  { opacity: 1; }
+  28%  { opacity: 0.82; }
+  33%  { opacity: 0.97; }
+  37%  { opacity: 0.75; }
+  42%  { opacity: 0.93; }
+  46%  { opacity: 1; }
+  51%  { opacity: 0.8; }
+  55%  { opacity: 0.96; }
+  60%  { opacity: 0.73; }
+  64%  { opacity: 0.91; }
+  69%  { opacity: 1; }
+  73%  { opacity: 0.84; }
+  78%  { opacity: 0.95; }
+  82%  { opacity: 0.76; }
+  87%  { opacity: 0.98; }
+  91%  { opacity: 0.88; }
+  95%  { opacity: 0.72; }
+  100% { opacity: 0.85; }
+}
+
+@keyframes flicker-core {
+  0%   { filter: brightness(1); }
+  7%   { filter: brightness(1.08); }
+  13%  { filter: brightness(0.95); }
+  21%  { filter: brightness(1.12); }
+  29%  { filter: brightness(0.97); }
+  36%  { filter: brightness(1.05); }
+  44%  { filter: brightness(0.92); }
+  52%  { filter: brightness(1.1); }
+  61%  { filter: brightness(0.96); }
+  69%  { filter: brightness(1.07); }
+  77%  { filter: brightness(0.93); }
+  85%  { filter: brightness(1.04); }
+  93%  { filter: brightness(0.98); }
+  100% { filter: brightness(1); }
+}
+
+#scrollsaber-blade {
+  animation: flicker-core 0.7s steps(1) infinite;
+}
+
+#scrollsaber-blade::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 0 0 11px 11px;
+  background: transparent;
+  box-shadow:
+    0 0 14px var(--saber-color, #4af),
+    0 0 30px var(--saber-glow-outer, rgba(68,170,255,0.3));
+  animation: flicker-outer 0.8s steps(1) infinite;
+  pointer-events: none;
+}
+
+#scrollsaber-blade.dragging {
+  cursor: grabbing;
+}
+
+/* Track glow */
+#scrollsaber-blade-area::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--blade-height, 0px);
+  background: linear-gradient(
+    180deg,
+    var(--saber-glow-outer, rgba(68,170,255,0.08)) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ============ IGNITION ============ */
+@keyframes ignite {
+  0%   { transform: scaleY(0); opacity: 0; filter: brightness(4); }
+  30%  { transform: scaleY(0.3); opacity: 1; filter: brightness(2.5); }
+  60%  { transform: scaleY(0.9); filter: brightness(1.5); }
+  80%  { transform: scaleY(1.05); filter: brightness(1.1); }
+  100% { transform: scaleY(1); opacity: 1; filter: brightness(1); }
+}
+
+#scrollsaber-blade.igniting {
+  animation: ignite 0.4s ease-out forwards;
+  transform-origin: top center;
+}
+
+/* ============ NO-FLICKER MODE ============ */
+.no-flicker #scrollsaber-blade:not(.igniting):not(.retracting),
+.no-flicker #scrollsaber-blade2:not(.igniting):not(.retracting) {
+  animation: none !important;
+}
+.no-flicker #scrollsaber-blade:not(.igniting):not(.retracting)::after,
+.no-flicker #scrollsaber-blade2:not(.igniting):not(.retracting)::after {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+/* ============ CLASH EFFECT ============ */
+#scrollsaber-clash {
+  position: absolute;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+}
+
+#scrollsaber-clash.active {
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, var(--saber-color, #4af) 40%, transparent 70%);
+  box-shadow: 0 0 15px #fff, 0 0 30px var(--saber-color, #4af), 0 0 50px var(--saber-glow-outer, rgba(68,170,255,0.4));
+  animation: clash-flash 0.35s ease-out forwards;
+}
+
+@keyframes clash-flash {
+  0%   { transform: scale(0.3); opacity: 1; }
+  20%  { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.scrollsaber-spark {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 3px #fff, 0 0 6px var(--saber-color, #4af);
+  pointer-events: none;
+  z-index: 10;
+  animation: clash-spark 0.35s ease-out forwards;
+}
+
+@keyframes clash-spark {
+  0%   { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--sx, 0px)), calc(-50% + var(--sy, 0px))) scale(0); opacity: 0; }
+}
+
+/* ============ SWORD / EJECT MODES ============ */
+
+/* In saber/eject modes, track uses block layout instead of flex column */
+.mode-saber#scrollsaber-track,
+.mode-eject#scrollsaber-track {
+  display: block;
+}
+
+/* Hilt becomes absolute-positioned thumb */
+.mode-saber #scrollsaber-hilt,
+.mode-eject #scrollsaber-hilt {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: scaleY(-1); /* Flip so emitter faces upward */
+  cursor: grab;
+}
+
+.mode-saber #scrollsaber-hilt.dragging,
+.mode-eject #scrollsaber-hilt.dragging {
+  cursor: grabbing;
+}
+
+/* Eject mode: hide emitter glow until blade is ejected */
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter,
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter2 {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter::after,
+.mode-eject:not(.blade-ejected) #scrollsaber-emitter2::after {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Blade area spans full track in saber/eject modes */
+.mode-saber #scrollsaber-blade-area,
+.mode-eject #scrollsaber-blade-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Blade extends downward from top (visually upward from hilt) */
+.mode-saber #scrollsaber-blade,
+.mode-eject #scrollsaber-blade {
+  top: 0;
+  border-radius: 8px 8px 0 0; /* Rounded at top (blade tip) instead of bottom */
+}
+
+/* Core highlight — round at top instead of bottom */
+.mode-saber #scrollsaber-blade::before,
+.mode-eject #scrollsaber-blade::before {
+  border-radius: 4px 4px 0 0;
+  top: 6px;
+  bottom: 0;
+}
+
+/* Outer glow — round at top */
+.mode-saber #scrollsaber-blade::after,
+.mode-eject #scrollsaber-blade::after {
+  border-radius: 11px 11px 0 0;
+}
+
+/* Track glow grows from top in saber mode */
+.mode-saber #scrollsaber-blade-area::before {
+  top: 0;
+  height: var(--blade-height, 0px);
+}
+
+/* No track glow in eject mode — blade is fixed-length, not anchored to top */
+.mode-eject #scrollsaber-blade-area::before {
+  display: none;
+}
+
+/* Ignition origin is bottom (toward hilt) in saber/eject */
+.mode-saber #scrollsaber-blade.igniting,
+.mode-eject #scrollsaber-blade.igniting {
+  transform-origin: bottom center;
+}
+
+/* Retract animation for eject mode */
+@keyframes retract {
+  0%   { transform: scaleY(1); opacity: 1; filter: brightness(1); }
+  30%  { transform: scaleY(0.7); filter: brightness(2); }
+  100% { transform: scaleY(0); opacity: 0; filter: brightness(4); }
+}
+
+.mode-eject #scrollsaber-blade.retracting {
+  animation: retract 0.3s ease-in forwards;
+  transform-origin: bottom center;
+}
+
+/* ============ CONTACT SPARKS (eject blade hitting top) ============ */
+#scrollsaber-contact {
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  right: 2px;
+  height: 6px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+}
+
+#scrollsaber-contact.active {
+  opacity: 1;
+  background: radial-gradient(
+    ellipse at center bottom,
+    rgba(255,255,255,0.95) 0%,
+    rgba(255,200,60,0.8) 25%,
+    rgba(255,120,20,0.4) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 6px #fff,
+    0 0 12px rgba(255,200,60,0.8),
+    0 0 24px rgba(255,120,20,0.5),
+    0 0 40px rgba(255,80,0,0.3);
+  animation: contact-pulse 0.1s ease-in-out infinite alternate;
+}
+
+@keyframes contact-pulse {
+  0%   { opacity: 0.6; filter: brightness(0.85); }
+  100% { opacity: 1;   filter: brightness(1.3); }
+}
+
+/* Flying ember sparks */
+.scrollsaber-contact-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10;
+  animation: contact-spark-fly var(--dur, 0.5s) ease-out forwards;
+}
+
+/* Bright ember core with orange/yellow glow */
+.scrollsaber-contact-spark.ember-hot {
+  background: #fff;
+  box-shadow:
+    0 0 2px #fff,
+    0 0 5px rgba(255,220,80,0.9),
+    0 0 12px rgba(255,140,20,0.7);
+}
+.scrollsaber-contact-spark.ember-warm {
+  background: #ffc830;
+  width: 2px;
+  height: 2px;
+  box-shadow:
+    0 0 3px rgba(255,200,50,0.9),
+    0 0 8px rgba(255,120,0,0.6);
+}
+.scrollsaber-contact-spark.ember-dim {
+  background: #ff6a00;
+  width: 2px;
+  height: 2px;
+  box-shadow:
+    0 0 2px rgba(255,100,0,0.8),
+    0 0 6px rgba(200,60,0,0.5);
+}
+
+@keyframes contact-spark-fly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1.3); }
+  30%  { opacity: 1; }
+  70%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 10px)) scale(0); }
+}
+
+/* ============ MELT EFFECT ============ */
+#scrollsaber-melt {
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  right: -4px;
+  height: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  overflow: visible;
+}
+
+/* Active melting — layered organic blobs */
+#scrollsaber-melt.active {
+  /* JS sets --melt-skew, --melt-blobL, --melt-blobR each frame for organic jitter */
+  border-radius:
+    0 0
+    var(--melt-blobL, 40%) var(--melt-blobR, 60%) /
+    0 0 80% 80%;
+  background: radial-gradient(
+    ellipse 120% 70% at var(--melt-hotspot, 55%) 0%,
+    rgba(255,255,240,0.95) 0%,
+    rgba(255,220,100,0.75) 18%,
+    rgba(255,140,20,0.5) 40%,
+    rgba(220,60,0,0.25) 65%,
+    transparent 100%
+  );
+  box-shadow:
+    0 2px 6px rgba(255,200,60,0.5),
+    0 4px 14px rgba(255,120,20,0.3),
+    0 0 20px rgba(255,80,0,0.2);
+  transform: skewX(var(--melt-skew, 0deg));
+}
+
+/* Secondary blob — offset hot spot via ::before */
+#scrollsaber-melt.active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 15%;
+  height: 65%;
+  border-radius: 0 0 50% 35% / 0 0 100% 100%;
+  background: radial-gradient(
+    ellipse 90% 80% at 40% 0%,
+    rgba(255,255,255,0.6) 0%,
+    rgba(255,200,80,0.3) 40%,
+    transparent 100%
+  );
+  transform: skewX(calc(var(--melt-skew, 0deg) * -1.5));
+}
+
+/* Tertiary wisp — trailing heat distortion */
+#scrollsaber-melt.active::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: -2px;
+  right: -2px;
+  height: 80%;
+  border-radius: 0 0 30% 60% / 0 0 100% 100%;
+  background: radial-gradient(
+    ellipse 80% 90% at 60% 0%,
+    rgba(200,40,0,0.2) 0%,
+    rgba(120,10,0,0.08) 50%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* Cooling animation — organic fade from hot to cold */
+#scrollsaber-melt.cooling {
+  animation: melt-cool-shape var(--cool-dur, 1.5s) ease-out forwards;
+  /* Freeze the last organic shape */
+  border-radius:
+    0 0
+    var(--melt-blobL, 40%) var(--melt-blobR, 60%) /
+    0 0 80% 80%;
+}
+
+#scrollsaber-melt.cooling::before {
+  animation: melt-cool-inner var(--cool-dur, 1.5s) ease-out forwards;
+}
+
+#scrollsaber-melt.cooling::after {
+  animation: melt-cool-outer var(--cool-dur, 1.5s) ease-out forwards;
+}
+
+/* Main melt body cools */
+@keyframes melt-cool-shape {
+  0% {
+    opacity: var(--cool-start-opacity, 1);
+    background: radial-gradient(ellipse 120% 70% at var(--melt-hotspot, 55%) 0%,
+      rgba(255,220,100,0.8) 0%, rgba(255,140,20,0.5) 30%,
+      rgba(200,50,0,0.25) 60%, transparent 100%);
+    box-shadow: 0 2px 6px rgba(255,200,60,0.5), 0 4px 14px rgba(255,120,20,0.3);
+  }
+  20% {
+    background: radial-gradient(ellipse 110% 65% at var(--melt-hotspot, 55%) 0%,
+      rgba(255,160,40,0.65) 0%, rgba(220,70,0,0.4) 35%,
+      rgba(160,20,0,0.15) 65%, transparent 100%);
+    box-shadow: 0 2px 5px rgba(255,140,20,0.3), 0 3px 10px rgba(200,50,0,0.2);
+  }
+  45% {
+    background: radial-gradient(ellipse 100% 60% at var(--melt-hotspot, 55%) 0%,
+      rgba(220,70,0,0.45) 0%, rgba(160,25,0,0.25) 40%,
+      rgba(80,5,0,0.08) 70%, transparent 100%);
+    box-shadow: 0 1px 4px rgba(200,50,0,0.15);
+    opacity: calc(var(--cool-start-opacity, 1) * 0.6);
+  }
+  70% {
+    background: radial-gradient(ellipse 90% 55% at var(--melt-hotspot, 55%) 0%,
+      rgba(140,15,0,0.25) 0%, rgba(70,5,0,0.1) 50%, transparent 100%);
+    box-shadow: 0 1px 3px rgba(120,10,0,0.08);
+    opacity: calc(var(--cool-start-opacity, 1) * 0.3);
+  }
+  100% {
+    background: radial-gradient(ellipse 80% 50% at var(--melt-hotspot, 55%) 0%,
+      rgba(50,3,0,0.08) 0%, transparent 60%);
+    box-shadow: none;
+    opacity: 0;
+    height: var(--cool-height, 20px);
+  }
+}
+
+/* Inner highlight cools faster */
+@keyframes melt-cool-inner {
+  0%   { opacity: 0.6; }
+  30%  { opacity: 0.2; }
+  100% { opacity: 0; }
+}
+
+/* Outer heat haze lingers longer */
+@keyframes melt-cool-outer {
+  0%   { opacity: 0.7; }
+  50%  { opacity: 0.4; }
+  80%  { opacity: 0.15; }
+  100% { opacity: 0; }
+}
+
+/* Molten drips — falling drops of melted metal */
+.scrollsaber-melt-drip {
+  position: absolute;
+  width: 3px;
+  height: 5px;
+  border-radius: 1px 1px 50% 50%;
+  background: linear-gradient(180deg, rgba(255,140,20,0.9), rgba(200,50,0,0.7));
+  box-shadow:
+    0 0 3px rgba(255,120,0,0.6),
+    0 0 8px rgba(255,80,0,0.3);
+  pointer-events: none;
+  z-index: 9;
+  animation: melt-drip-fall var(--dur, 0.8s) ease-in forwards;
+}
+
+.scrollsaber-melt-drip.drip-hot {
+  background: linear-gradient(180deg, rgba(255,240,180,0.95), rgba(255,180,40,0.8));
+  box-shadow:
+    0 0 4px rgba(255,220,80,0.8),
+    0 0 10px rgba(255,160,30,0.5);
+  width: 3px;
+  height: 6px;
+}
+
+.scrollsaber-melt-drip.drip-warm {
+  background: linear-gradient(180deg, rgba(255,180,40,0.9), rgba(255,100,10,0.7));
+  box-shadow:
+    0 0 3px rgba(255,160,30,0.7),
+    0 0 8px rgba(255,100,0,0.4);
+}
+
+@keyframes melt-drip-fall {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scaleY(1);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(var(--drift, 0px) * 0.3), calc(var(--fall, 30px) * 0.05)) scaleY(1.3);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translate(calc(var(--drift, 0px) * 0.7), calc(var(--fall, 30px) * 0.4)) scaleY(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--drift, 0px), var(--fall, 30px)) scaleY(0.6);
+  }
+}
+
+/* ============ DUAL MODE — SECOND BLADE ============ */
+#scrollsaber-blade2 {
+  position: absolute;
+  left: var(--blade-inset, 8px);
+  right: var(--blade-inset, 8px);
+  height: 0;
+  display: none;
+  border-radius: 0 0 8px 8px;
+  cursor: grab;
+  background: linear-gradient(
+    90deg,
+    var(--saber-color, #4af) 0%,
+    rgba(255,255,255,0.7) 25%,
+    rgba(255,255,255,0.9) 50%,
+    rgba(255,255,255,0.7) 75%,
+    var(--saber-color, #4af) 100%
+  );
+  box-shadow:
+    0 0 4px #fff,
+    0 0 6px #fff,
+    0 0 10px var(--saber-color, #4af),
+    0 0 20px var(--saber-color, #4af),
+    0 0 35px var(--saber-color, #4af),
+    0 0 50px var(--saber-glow-outer, rgba(68,170,255,0.4)),
+    0 0 80px var(--saber-glow-outer, rgba(68,170,255,0.2));
+  animation: flicker-core 0.7s steps(1) infinite;
+}
+
+#scrollsaber-blade2::before {
+  content: "";
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  top: 0;
+  bottom: 6px;
+  border-radius: 0 0 4px 4px;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+#scrollsaber-blade2::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 0 0 11px 11px;
+  background: transparent;
+  box-shadow:
+    0 0 14px var(--saber-color, #4af),
+    0 0 30px var(--saber-glow-outer, rgba(68,170,255,0.3));
+  animation: flicker-outer 0.8s steps(1) infinite;
+  pointer-events: none;
+}
+
+#scrollsaber-blade2.igniting {
+  animation: ignite 0.4s ease-out forwards;
+  transform-origin: top center;
+}
+
+#scrollsaber-blade2.retracting {
+  animation: retract 0.3s ease-in forwards;
+  transform-origin: top center;
+}
+
+/* ============ BOTTOM CONTACT SPARKS (Dual blade hitting bottom) ============ */
+#scrollsaber-contact2 {
+  position: absolute;
+  bottom: -2px;
+  left: 2px;
+  right: 2px;
+  height: 6px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+}
+
+#scrollsaber-contact2.active {
+  opacity: 1;
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(255,255,255,0.95) 0%,
+    rgba(255,200,60,0.8) 25%,
+    rgba(255,120,20,0.4) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 6px #fff,
+    0 0 12px rgba(255,200,60,0.8),
+    0 0 24px rgba(255,120,20,0.5),
+    0 0 40px rgba(255,80,0,0.3);
+  animation: contact-pulse 0.1s ease-in-out infinite alternate;
+}
+
+/* ============ BOTTOM MELT EFFECT ============ */
+#scrollsaber-melt2 {
+  position: absolute;
+  bottom: -2px;
+  left: -4px;
+  right: -4px;
+  height: 0;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  overflow: visible;
+}
+
+#scrollsaber-melt2.active {
+  border-radius:
+    var(--melt-blobL2, 40%) var(--melt-blobR2, 60%)
+    0 0 /
+    80% 80% 0 0;
+  background: radial-gradient(
+    ellipse 120% 70% at var(--melt-hotspot2, 55%) 100%,
+    rgba(255,255,240,0.95) 0%,
+    rgba(255,220,100,0.75) 18%,
+    rgba(255,140,20,0.5) 40%,
+    rgba(220,60,0,0.25) 65%,
+    transparent 100%
+  );
+  box-shadow:
+    0 -2px 6px rgba(255,200,60,0.5),
+    0 -4px 14px rgba(255,120,20,0.3),
+    0 0 20px rgba(255,80,0,0.2);
+  transform: skewX(var(--melt-skew2, 0deg));
+}
+
+#scrollsaber-melt2.active::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 15%;
+  height: 65%;
+  border-radius: 50% 35% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(
+    ellipse 90% 80% at 40% 100%,
+    rgba(255,255,255,0.6) 0%,
+    rgba(255,200,80,0.3) 40%,
+    transparent 100%
+  );
+  transform: skewX(calc(var(--melt-skew2, 0deg) * -1.5));
+}
+
+#scrollsaber-melt2.active::after {
+  content: "";
+  position: absolute;
+  bottom: 40%;
+  left: -2px;
+  right: -2px;
+  height: 80%;
+  border-radius: 30% 60% 0 0 / 100% 100% 0 0;
+  background: radial-gradient(
+    ellipse 80% 90% at 60% 100%,
+    rgba(200,40,0,0.2) 0%,
+    rgba(120,10,0,0.08) 50%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* Bottom melt cooling */
+#scrollsaber-melt2.cooling {
+  animation: melt-cool-shape-bottom var(--cool-dur2, 1.5s) ease-out forwards;
+  border-radius:
+    var(--melt-blobL2, 40%) var(--melt-blobR2, 60%)
+    0 0 /
+    80% 80% 0 0;
+}
+
+#scrollsaber-melt2.cooling::before {
+  animation: melt-cool-inner var(--cool-dur2, 1.5s) ease-out forwards;
+}
+
+#scrollsaber-melt2.cooling::after {
+  animation: melt-cool-outer var(--cool-dur2, 1.5s) ease-out forwards;
+}
+
+@keyframes melt-cool-shape-bottom {
+  0% {
+    opacity: var(--cool-start-opacity2, 1);
+    background: radial-gradient(ellipse 120% 70% at var(--melt-hotspot2, 55%) 100%,
+      rgba(255,220,100,0.8) 0%, rgba(255,140,20,0.5) 30%,
+      rgba(200,50,0,0.25) 60%, transparent 100%);
+    box-shadow: 0 -2px 6px rgba(255,200,60,0.5), 0 -4px 14px rgba(255,120,20,0.3);
+  }
+  20% {
+    background: radial-gradient(ellipse 110% 65% at var(--melt-hotspot2, 55%) 100%,
+      rgba(255,160,40,0.65) 0%, rgba(220,70,0,0.4) 35%,
+      rgba(160,20,0,0.15) 65%, transparent 100%);
+    box-shadow: 0 -2px 5px rgba(255,140,20,0.3), 0 -3px 10px rgba(200,50,0,0.2);
+  }
+  45% {
+    background: radial-gradient(ellipse 100% 60% at var(--melt-hotspot2, 55%) 100%,
+      rgba(220,70,0,0.45) 0%, rgba(160,25,0,0.25) 40%,
+      rgba(80,5,0,0.08) 70%, transparent 100%);
+    box-shadow: 0 -1px 4px rgba(200,50,0,0.15);
+    opacity: calc(var(--cool-start-opacity2, 1) * 0.6);
+  }
+  70% {
+    background: radial-gradient(ellipse 90% 55% at var(--melt-hotspot2, 55%) 100%,
+      rgba(140,15,0,0.25) 0%, rgba(70,5,0,0.1) 50%, transparent 100%);
+    box-shadow: 0 -1px 3px rgba(120,10,0,0.08);
+    opacity: calc(var(--cool-start-opacity2, 1) * 0.3);
+  }
+  100% {
+    background: radial-gradient(ellipse 80% 50% at var(--melt-hotspot2, 55%) 100%,
+      rgba(50,3,0,0.08) 0%, transparent 60%);
+    box-shadow: none;
+    opacity: 0;
+    height: var(--cool-height2, 20px);
+  }
+}
+
+/* ============ LEFT-HAND MODE ============ */
+html.scrollsaber-left {
+  margin-right: 0 !important;
+  margin-left: 28px !important;
+}
+
+.left-hand#scrollsaber-track {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 1px solid #111;
+}

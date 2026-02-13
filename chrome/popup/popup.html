@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>ScrollSaber</h1>
+
+  <p class="section-label">Mode</p>
+  <div class="modes">
+    <button class="mode-btn" data-mode="eject" title="Double-click hilt to ignite blade">
+      <span class="mode-hint">Dbl-Click Hilt!</span>
+      <span class="mode-icon mode-icon-eject"></span>
+      <span class="label">Eject</span>
+    </button>
+    <button class="mode-btn" data-mode="saber" title="Hilt moves as scroll handle, blade extends upward">
+      <span class="mode-icon mode-icon-saber"></span>
+      <span class="label">Sword</span>
+    </button>
+    <button class="mode-btn" data-mode="classic" title="Hilt fixed at top, blade extends downward">
+      <span class="mode-icon mode-icon-classic"></span>
+      <span class="label">Static</span>
+    </button>
+  </div>
+
+  <p class="section-label">Hilt</p>
+  <div class="hilts">
+    <button class="hilt-btn" data-hilt="chrome">
+      <span class="hilt-preview hilt-preview-chrome"></span>
+    </button>
+    <button class="hilt-btn" data-hilt="obsidian">
+      <span class="hilt-preview hilt-preview-obsidian"></span>
+    </button>
+    <button class="hilt-btn" data-hilt="gold">
+      <span class="hilt-preview hilt-preview-gold"></span>
+    </button>
+    <button class="hilt-btn" data-hilt="copper">
+      <span class="hilt-preview hilt-preview-copper"></span>
+    </button>
+  </div>
+
+  <p class="section-label">Crystal</p>
+  <div class="colors">
+    <button class="saber-btn" data-color="blue" style="--c:#4af;--cg:rgba(68,170,255,0.5)" title="Blue">
+      <span class="saber-preview"><span class="mini-hilt"></span><span class="blade-glow"></span></span>
+      <span class="label">Blue</span>
+    </button>
+    <button class="saber-btn" data-color="green" style="--c:#4f4;--cg:rgba(68,255,68,0.5)" title="Green">
+      <span class="saber-preview"><span class="mini-hilt"></span><span class="blade-glow"></span></span>
+      <span class="label">Green</span>
+    </button>
+    <button class="saber-btn" data-color="red" style="--c:#f44;--cg:rgba(255,68,68,0.5)" title="Red">
+      <span class="saber-preview"><span class="mini-hilt"></span><span class="blade-glow"></span></span>
+      <span class="label">Red</span>
+    </button>
+    <button class="saber-btn" data-color="purple" style="--c:#c4f;--cg:rgba(200,68,255,0.5)" title="Purple">
+      <span class="saber-preview"><span class="mini-hilt"></span><span class="blade-glow"></span></span>
+      <span class="label">Purple</span>
+    </button>
+    <button class="saber-btn" data-color="dark" style="--c:#556;--cg:rgba(140,140,160,0.5)" title="Darksword">
+      <span class="saber-preview"><span class="mini-hilt"></span><span class="blade-glow"></span></span>
+      <span class="label">Black</span>
+    </button>
+    <button class="saber-btn" data-color="white" style="--c:#eef;--cg:rgba(220,220,255,0.5)" title="White">
+      <span class="saber-preview"><span class="mini-hilt"></span><span class="blade-glow"></span></span>
+      <span class="label">White</span>
+    </button>
+  </div>
+
+  <div class="custom-color">
+    <button class="custom-btn" id="custom-toggle">
+      <span class="custom-swatch" id="custom-swatch"></span>
+      <span class="label">Custom</span>
+    </button>
+    <div class="custom-panel" id="custom-panel">
+      <div class="slider-row">
+        <span class="slider-label">Hue</span>
+        <input type="range" id="hue-slider" class="hue-range" min="0" max="360" value="210">
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Bright</span>
+        <input type="range" id="bright-slider" min="20" max="80" value="50">
+      </div>
+    </div>
+  </div>
+
+  <div class="settings">
+    <label class="toggle">
+      <input type="checkbox" id="flicker-toggle" checked>
+      <span class="toggle-slider"></span>
+      <span class="toggle-label">Blade flicker</span>
+    </label>
+    <label class="toggle">
+      <input type="checkbox" id="lefthand-toggle">
+      <span class="toggle-slider"></span>
+      <span class="toggle-label">Left-hand mode</span>
+    </label>
+    <label class="toggle">
+      <input type="checkbox" id="sound-toggle">
+      <span class="toggle-slider"></span>
+      <span class="toggle-label">Sound FX</span>
+    </label>
+    <label class="toggle" id="dual-row">
+      <input type="checkbox" id="dual-toggle">
+      <span class="toggle-slider"></span>
+      <span class="toggle-label">Dual mode</span>
+      <span class="dual-hint" id="dual-hint">eject mode only</span>
+    </label>
+    <div class="slider-row">
+      <span class="slider-label">Volume</span>
+      <input type="range" id="volume-slider" min="0" max="100" value="50">
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Width</span>
+      <input type="range" id="width-slider" min="1" max="5" value="1">
+    </div>
+  </div>
+
+  <a href="https://buymeacoffee.com/lennacodes" target="_blank" class="support-btn">Support Me</a>
+
+  <script src="popup.js"></script>
+</body>
+</html>
