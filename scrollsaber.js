@@ -40,6 +40,8 @@
   let bladeEjected = false;
   let hasIgnited = false;
   let dualMode = false;
+  let ejectClashFired = false;
+  let ejectClashFired2 = false;
 
   // --- Flicker ---
   let flickerEnabled = true;
@@ -150,6 +152,8 @@
     blade.style.top = "";
     blade.classList.remove("igniting", "retracting");
     bladeEjected = false;
+    ejectClashFired = false;
+    ejectClashFired2 = false;
     track.classList.remove("blade-ejected");
     setContactSparks(false);
     // Force-reset melt element
@@ -218,7 +222,7 @@
     const bladeStart = hiltTop + hiltH;
     const maxLen = trackH - bladeStart;
     const bladeH = Math.max(0, Math.min(fixedLen, maxLen));
-    const touching = maxLen >= 0 && maxLen < fixedLen;
+    const touching = maxLen > 0 && maxLen < fixedLen;
     const pushDepth = touching ? Math.min(1, (fixedLen - maxLen) / fixedLen) : 0;
     return { bladeH, bladeStart, touching, pushDepth };
   }
@@ -265,13 +269,37 @@
         blade.style.top = geo.bladeTop + "px";
         blade.style.height = geo.bladeH + "px";
         bladeArea.style.setProperty("--blade-height", geo.bladeH + "px");
-        setContactSparks(geo.touching, geo.pushDepth);
+
+        if (!geo.touching) {
+          ejectClashFired = false;
+          setContactSparks(false);
+        } else if (geo.pushDepth > 0.95 && !ejectClashFired) {
+          ejectClashFired = true;
+          triggerClash("top");
+          setContactSparks(false);
+        } else if (!ejectClashFired) {
+          setContactSparks(true, geo.pushDepth);
+        } else {
+          setContactSparks(false);
+        }
 
         if (dualMode) {
           const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
           blade2.style.top = geo2.bladeStart + "px";
           blade2.style.height = geo2.bladeH + "px";
-          setContactSparks2(geo2.touching, geo2.pushDepth);
+
+          if (!geo2.touching) {
+            ejectClashFired2 = false;
+            setContactSparks2(false);
+          } else if (geo2.pushDepth > 0.95 && !ejectClashFired2) {
+            ejectClashFired2 = true;
+            triggerClash("bottom");
+            setContactSparks2(false);
+          } else if (!ejectClashFired2) {
+            setContactSparks2(true, geo2.pushDepth);
+          } else {
+            setContactSparks2(false);
+          }
         }
       } else {
         blade.style.height = "0";
@@ -386,13 +414,37 @@
         blade.style.top = geo.bladeTop + "px";
         blade.style.height = geo.bladeH + "px";
         bladeArea.style.setProperty("--blade-height", geo.bladeH + "px");
-        setContactSparks(geo.touching, geo.pushDepth);
+
+        if (!geo.touching) {
+          ejectClashFired = false;
+          setContactSparks(false);
+        } else if (geo.pushDepth > 0.95 && !ejectClashFired) {
+          ejectClashFired = true;
+          triggerClash("top");
+          setContactSparks(false);
+        } else if (!ejectClashFired) {
+          setContactSparks(true, geo.pushDepth);
+        } else {
+          setContactSparks(false);
+        }
 
         if (dualMode) {
           const geo2 = getEjectBlade2Geometry(hiltTop, hiltH, trackH);
           blade2.style.top = geo2.bladeStart + "px";
           blade2.style.height = geo2.bladeH + "px";
-          setContactSparks2(geo2.touching, geo2.pushDepth);
+
+          if (!geo2.touching) {
+            ejectClashFired2 = false;
+            setContactSparks2(false);
+          } else if (geo2.pushDepth > 0.95 && !ejectClashFired2) {
+            ejectClashFired2 = true;
+            triggerClash("bottom");
+            setContactSparks2(false);
+          } else if (!ejectClashFired2) {
+            setContactSparks2(true, geo2.pushDepth);
+          } else {
+            setContactSparks2(false);
+          }
         }
       }
     }
@@ -417,6 +469,8 @@
     if (!bladeEjected) {
       // Ignite — eject blade upward with fixed length
       bladeEjected = true;
+      ejectClashFired = false;
+      ejectClashFired2 = false;
       track.classList.add("blade-ejected");
       const trackH = track.clientHeight;
       const hiltH = hilt.offsetHeight;
@@ -1128,7 +1182,7 @@
 
   // --- Clash effect ---
   function checkClash() {
-    if (currentMode === "eject" && !bladeEjected) { lastScrollY = window.scrollY; return; }
+    if (currentMode === "eject") { lastScrollY = window.scrollY; return; }
     if (!hasIgnited) { lastScrollY = window.scrollY; return; }
     const scrollMax = getScrollMax();
     if (scrollMax <= 0) { lastScrollY = window.scrollY; return; }
@@ -1158,6 +1212,8 @@
     let clashY;
     if (currentMode === "classic") {
       clashY = position === "bottom" ? (parseInt(blade.style.height) || 0) : 0;
+    } else if (currentMode === "eject") {
+      clashY = position === "top" ? 0 : bladeArea.clientHeight;
     } else {
       clashY = position === "top" ? 0 : (parseInt(blade.style.height) || 0);
     }
