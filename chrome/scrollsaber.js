@@ -466,6 +466,16 @@
     updateBlade();
   }
 
+  // --- Restore ejected state on page load (no animation, no sound) ---
+  function restoreEjectedState() {
+    if (currentMode !== "eject") return;
+    bladeEjected = true;
+    track.classList.add("blade-ejected");
+    blade.style.display = "";
+    if (dualMode) blade2.style.display = "block";
+    updateBlade();
+  }
+
   // --- Eject mode: double-click to toggle blade ---
   function onHiltDblClick(e) {
     if (currentMode !== "eject") return;
@@ -475,6 +485,7 @@
     if (!bladeEjected) {
       // Ignite — eject blade upward with fixed length
       bladeEjected = true;
+      chrome.storage.local.set({ saberEjected: true });
       ejectClashFired = false;
       ejectClashFired2 = false;
       track.classList.add("blade-ejected");
@@ -514,6 +525,7 @@
     } else {
       // Retract blade
       bladeEjected = false;
+      chrome.storage.local.set({ saberEjected: false });
       track.classList.remove("blade-ejected");
       setContactSparks(false);
       playSound(retractionBuffer);
@@ -1318,7 +1330,7 @@
 
     track.addEventListener("selectstart", (e) => e.preventDefault());
 
-    chrome.storage.local.get(["saberColor", "saberCustomColor", "saberHilt", "saberFlicker", "saberLeftHand", "saberMode", "saberSound", "saberVolume", "saberWidth", "saberMaul"]).then((result) => {
+    chrome.storage.local.get(["saberColor", "saberCustomColor", "saberHilt", "saberFlicker", "saberLeftHand", "saberMode", "saberSound", "saberVolume", "saberWidth", "saberMaul", "saberEjected"]).then((result) => {
       applySaberColor(result.saberColor || "blue", result.saberCustomColor);
       applyHilt(result.saberHilt || "chrome");
       applyMode(result.saberMode || "eject");
@@ -1335,6 +1347,7 @@
       setSoundVolume(result.saberVolume != null ? result.saberVolume : 50);
       setBladeWidth(result.saberWidth != null ? result.saberWidth : 1);
       if (result.saberMaul) setDualMode(true);
+      if (result.saberEjected) restoreEjectedState();
     });
 
     chrome.storage.onChanged.addListener((changes) => {
@@ -1347,7 +1360,12 @@
       if (changes.saberHilt) applyHilt(changes.saberHilt.newValue);
       if (changes.saberFlicker) setFlicker(changes.saberFlicker.newValue);
       if (changes.saberLeftHand) setLeftHand(changes.saberLeftHand.newValue);
-      if (changes.saberMode) applyMode(changes.saberMode.newValue);
+      if (changes.saberMode) {
+        applyMode(changes.saberMode.newValue);
+        if (changes.saberMode.newValue !== "eject") {
+          chrome.storage.local.set({ saberEjected: false });
+        }
+      }
       if (changes.saberSound) setSoundEnabled(!!changes.saberSound.newValue);
       if (changes.saberVolume) setSoundVolume(changes.saberVolume.newValue);
       if (changes.saberWidth) setBladeWidth(changes.saberWidth.newValue);
